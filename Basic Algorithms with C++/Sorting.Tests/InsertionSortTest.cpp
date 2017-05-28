@@ -2,7 +2,7 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-namespace SortingTests
+namespace InsertionSortTests
 {		
 	TEST_CLASS(InsertionSortTests)
 	{
@@ -71,6 +71,5 @@ namespace SortingTests
 				// Assert
 				Assert::IsTrue(std::is_sorted(std::begin(arr), std::end(arr)));
 			}
-
 	};
 }

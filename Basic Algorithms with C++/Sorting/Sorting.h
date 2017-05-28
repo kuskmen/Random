@@ -9,4 +9,7 @@ class SORTING_API CSorting {
 public:
 	template <typename T>
 	static void InsertionSort(T* arr, size_t size);
+
+	template <typename T>
+	static void SelectionSort(T* arr, size_t size);
 };
