@@ -17,6 +17,7 @@ class ConnectionHandler : public AMQP::ConnectionHandler {
 		//  send all data at once, so you also need to take care of buffering
 		//  the bytes that could not immediately be sent, and try to send
 		//  them again when the socket becomes writable again
+		
 	}
 
 	/**
@@ -30,6 +31,41 @@ class ConnectionHandler : public AMQP::ConnectionHandler {
 		// @todo
 		//  add your own implementation, for example by creating a channel
 		//  instance, and start publishing or consuming
+		AMQP::Channel channel(connection);
+
+		channel.declareExchange("Hello World", AMQP::fanout)
+			.onSuccess([]() {
+				std::printf("Exchange was created sucessfully!\n");
+			})
+			.onError([](const char* message) {
+				std::printf("Something went wrong creating exchange! %s\n", message);
+			});
+		
+		channel.declareQueue()
+			.onSuccess([]() {
+				std::printf("Queue created successfully!\n");
+			})
+			.onError([](const char* message) {
+				std::printf("Something went wrong creating queue! %s\n", message);
+			});
+		
+			auto startCb = []() {
+				std::printf("Consuming started...");
+			};
+
+			auto errorCb = [](const char* message) {
+				std::printf("Something went wrong while consuming... %s\n", message);
+			};
+
+			auto msgCb = [&channel](const AMQP::Message &message, std::uint64_t deliveryTag, bool redelivered) {
+				std::printf("Message recieved: %s\n", message.message);
+			};
+
+			channel.consume("Hello World")
+				.onReceived(msgCb)
+				.onError(errorCb)
+				.onSuccess(startCb);
+
 	}
 
 	/**
@@ -45,6 +81,9 @@ class ConnectionHandler : public AMQP::ConnectionHandler {
 		//  add your own implementation, for example by reporting the error
 		//  to the user of your program, log the error, and destruct the
 		//  connection object because it is no longer in a usable state
+		std::printf("Something went wrong while making the connection... %s\n", message);
+		connection->close();
+		delete connection;
 	}
 
 	/**
@@ -54,6 +93,9 @@ class ConnectionHandler : public AMQP::ConnectionHandler {
 	*
 	*  @param  connection      The connection that was closed and that is now unusable
 	*/
-	virtual void onClosed(AMQP::Connection *connection) {}
+	virtual void onClosed(AMQP::Connection *connection) 
+	{
+		std::printf("Connection was closed!\n");
+	}
 
 };
