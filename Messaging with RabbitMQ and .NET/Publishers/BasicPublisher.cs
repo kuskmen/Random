@@ -15,6 +15,7 @@
         {
             Connection = new ConnectionFactory { HostName = "localhost" }.CreateConnection();
             Channel = Connection?.CreateModel();
+            Channel.QueueDeclare(queue: "Hello World", durable: false, exclusive: false, autoDelete: false, arguments: null);
             _disposed = false;
         }
 

@@ -5,6 +5,7 @@ using RabbitMQ.Client.Events;
 namespace TestConsumer
 {
     using RabbitMQ.Client;
+    using System.Threading;
 
     internal class Program
     {
@@ -16,10 +17,9 @@ namespace TestConsumer
                 using (var channel = connection.CreateModel())
                 {
                     channel.ExchangeDeclare(exchange: "Hello World", type: "fanout");
-
-                    var queueName = channel.QueueDeclare().QueueName;
+                    channel.QueueDeclare(queue: "Hello World", durable: false, exclusive: false, autoDelete: false, arguments: null);
                     channel.QueueBind(
-                        queue: queueName,
+                        queue: "Hello World",
                         exchange: "Hello World",
                         routingKey: ""
                         );
@@ -31,7 +31,8 @@ namespace TestConsumer
                     };
                     while (true)
                     {
-                        channel.BasicConsume(queue: queueName, noAck: true, consumer: consumer);
+                        Thread.Sleep(4500);
+                        channel.BasicConsume(queue: "Hello World", noAck: true, consumer: consumer);
                     }
                 }
             }

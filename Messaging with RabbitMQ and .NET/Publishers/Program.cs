@@ -1,31 +1,19 @@
 ﻿namespace Publishers
 {
     using System;
-    using System.Text;
     using System.Threading;
-
-    using RabbitMQ.Client;
 
     public class Program
     {
         public static void Main(string[] args)
         {
-            var factory = new ConnectionFactory() { HostName = "localhost" };
-            using (var connection = factory.CreateConnection())
+            using (var publisher = new BasicPublisher())
             {
-                using (var channel = connection.CreateModel())
+                publisher.DeclareExchange(name: "Hello World", type: "fanout");
+                while (true)
                 {
-                    channel.ExchangeDeclare(exchange: "Hello World", type: "fanout");
-                    while (true)
-                    {
-                        channel.BasicPublish(exchange: "Hello World",
-                            routingKey: "",
-                            basicProperties: null,
-                            body: Encoding.UTF8.GetBytes("Hello World!"));
-
-                        Console.WriteLine(" [x] Sent Hello World!");
-                        Thread.Sleep(5000);
-                    }
+                    publisher.Publish(msg: $"Hello World! {DateTime.Now}", exchangeName: "Hello World", routingKey: "");
+                    Thread.Sleep(5000);
                 }
             }
         }

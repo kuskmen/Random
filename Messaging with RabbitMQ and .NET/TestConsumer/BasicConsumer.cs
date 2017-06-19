@@ -17,7 +17,7 @@
             Connection = new ConnectionFactory {HostName = "localhost"}.CreateConnection();
             Channel = Connection?.CreateModel();
             _disposed = false;
-        }
+        } 
 
         public void DeclareExchange(string name, string type)
         {
@@ -26,9 +26,8 @@
 
         public void DeclareQueue(string exchangeName, string routingKey)
         {
-            var queueName = Channel?.QueueDeclare().QueueName;
             Channel?.QueueBind(
-                queue: queueName,
+                queue: "Hello World",
                 exchange: "Hello World",
                 routingKey: "");
         }

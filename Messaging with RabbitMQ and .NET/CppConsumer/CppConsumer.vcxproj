@@ -141,10 +141,12 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ConnectionHandler.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ConnectionHandler.cpp" />
     <ClCompile Include="CppConsumer.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -159,11 +161,13 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="..\packages\AMQP-CPP.2.6.1.5\build\native\AMQP-CPP.targets" Condition="Exists('..\packages\AMQP-CPP.2.6.1.5\build\native\AMQP-CPP.targets')" />
+    <Import Project="..\packages\libevent2-vc140.2.1.8\build\native\libevent2-vc140.targets" Condition="Exists('..\packages\libevent2-vc140.2.1.8\build\native\libevent2-vc140.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\AMQP-CPP.2.6.1.5\build\native\AMQP-CPP.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\AMQP-CPP.2.6.1.5\build\native\AMQP-CPP.targets'))" />
+    <Error Condition="!Exists('..\packages\libevent2-vc140.2.1.8\build\native\libevent2-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\libevent2-vc140.2.1.8\build\native\libevent2-vc140.targets'))" />
   </Target>
 </Project>
