@@ -1,7 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Threading;
+using System.Net.Http;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Builder;
@@ -13,14 +14,30 @@ namespace Consul.Service
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var host = new WebHostBuilder()
                 .UseKestrel()
                 .Configure(builder => builder.Map("/healthcheck", HealthCheckHandler))
                 .Build();
 
-           host.Run();
+            await new ConsulRegistry(new ConsulRegistryPayload
+            {
+                Name = $"{Assembly.GetExecutingAssembly().GetName().Name}",
+                Tags = new string[0],
+                Address = "localhost:7777",
+                Port = 7777,
+                Check = new ConsulRegistryCheck
+                {
+                    Http = "http://localhost:7777/healthcheck",
+                    DeregisterCriticalServicesAfter = "90m",
+                    Interval = "5s",
+                },
+                Checks = null,
+                EnableTagOverride = false,
+            }).Register();
+
+            host.Run();
         }
 
         public static IWebHost BuildWebHost(string[] args) =>
