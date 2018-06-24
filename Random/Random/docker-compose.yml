@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  consul.service:
+    image: ${DOCKER_REGISTRY}consulservice
+    build:
+      context: .
+      dockerfile: Consul.Service\Dockerfile
