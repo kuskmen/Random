@@ -1,60 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
+using System.Reflection;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace Consul.Service
 {
     public class ConsulRegistry
     {
-        private readonly HttpClient _httpClient;
-        private readonly ConsulRegistryPayload _payload;
+        private readonly ConsulClient _consulClient;
 
-        public ConsulRegistry(ConsulRegistryPayload payload)
+        public ConsulRegistry()
         {
-            _payload = payload;
-
-            _httpClient = new HttpClient
+            _consulClient = new ConsulClient((options) =>
             {
-                BaseAddress = new Uri("http://localhost:8500")
-            };
+                options.Address = new Uri("http://localhost:8500");
+            }); 
         }
 
         public async Task Register()
         {
-            var response = await _httpClient.PutAsync("/v1/agent/service/register", new StringContent(JsonConvert.SerializeObject(_payload)));
+            await _consulClient.Agent.ServiceRegister(new AgentServiceRegistration
+            {
+                Address = "http://localhost",
+                Check = new AgentServiceCheck
+                {
+                    DeregisterCriticalServiceAfter = TimeSpan.FromMinutes(90),
+                    HTTP = "http://localhost:7777/health",
+                    Interval = TimeSpan.FromSeconds(5),
+                },
+                Name = $"{Assembly.GetExecutingAssembly().GetName().Name}",
+                Port = 8500,
+                EnableTagOverride = false
+            });
         }
-
-
     }
-
-    public class ConsulRegistryPayload
-    {
-        public string Id { get; set; }
-        public string Name { get; set; }
-        public string[] Tags { get; set; }
-        public string Address { get; set; }
-        public int Port { get; set; }
-        public Dictionary<string, string> Meta { get; set; }
-        public bool EnableTagOverride { get; set; }
-        public ConsulRegistryCheck Check { get; set; }
-        public ConsulRegistryCheck[] Checks { get; set; }
-    }
-
-    public class ConsulRegistryCheck
-    {
-        public string Name { get; set; }
-        public string DeregisterCriticalServicesAfter { get; set; }
-        public string[] Args { get; set; }
-        public string Http { get; set; }
-        public string Interval { get; set; }
-        public string TTL { get; set; }
-    }
-
-    public class ConsulRegistryMetadata
-    {
-
-    }
-
 }
