@@ -20,15 +20,17 @@ namespace Consul.Service
         {
             await _consulClient.Agent.ServiceRegister(new AgentServiceRegistration
             {
-                Address = "http://localhost",
+                Address = "localhost",
+                Tags = new [] { "urlprefix-/test-path" },
                 Check = new AgentServiceCheck
                 {
-                    DeregisterCriticalServiceAfter = TimeSpan.FromMinutes(90),
+                    DeregisterCriticalServiceAfter = TimeSpan.FromMinutes(1),
                     HTTP = "http://localhost:7777/health",
                     Interval = TimeSpan.FromSeconds(5),
                 },
                 Name = $"{Assembly.GetExecutingAssembly().GetName().Name}",
-                Port = 8500,
+                ID = $"{Assembly.GetExecutingAssembly().GetName().Name}-localhost:7777",
+                Port = 7777,
                 EnableTagOverride = false
             });
         }
