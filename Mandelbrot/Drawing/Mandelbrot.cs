@@ -125,19 +125,19 @@ namespace Drawing {
                     statusLabel.Text = "Status: Error";
                     return;
 
-                } else {
-                    // Show zoom and undo controls.
-                    zoomCheckbox.Show();
-                    undoButton.Show();
-                    _undoNum++;
                 }
+
+                // Show zoom and undo controls.
+                zoomCheckbox.Show();
+                undoButton.Show();
+                _undoNum++;
 
                 // Mandelbrot iteration count.
                 _kMax = Convert.ToInt32(iterationCountTextBox.Text);
                 _numColours = _kMax;
 
                 // If colourTable is not yet created or kMax has changed, create colourTable.
-                if ((_colourTable == null) || (_kMax != _colourTable.KMax) || (_numColours != _colourTable.NColour)) {
+                if (_colourTable == null || _kMax != _colourTable.KMax || _numColours != _colourTable.NColour) {
                     _colourTable = new ColourTable(_numColours, _kMax);
                 }
 
@@ -195,12 +195,13 @@ namespace Drawing {
                         // Do the main Mandelbrot calculation. Iterate until the equation
                         // converges or the maximum number of iterations is reached.
                         var k = 0;
+                        // TODO: Parallelization
                         double modulusSquared;
                         do {
                             zk = zk.DoCmplxSqPlusConst(c);
                             modulusSquared = zk.DoMoulusSq();
                             k++;
-                        } while ((modulusSquared <= 4.0) && (k < _kMax));
+                        } while (modulusSquared <= 4.0 && k < _kMax);
 
                         if (k < _kMax) {
                             // Max number of iterations was not reached. This means that the
@@ -241,7 +242,7 @@ namespace Drawing {
                             // Draw single pixel
                             if (xyPixelStep == 1) {
                                 // Pixel step is 1, set a single pixel.
-                                if ((xPix < _myBitmap.Width) && (yPix >= 0)) {
+                                if (xPix < _myBitmap.Width && yPix >= 0) {
                                     _myBitmap.SetPixel(xPix, yPix, color);
                                 }
                             } else {
@@ -251,7 +252,7 @@ namespace Drawing {
                                     {
                                         for (var pY = 0; pY < xyPixelStep; pY++)
                                         {
-                                            if (((xPix + step) < _myBitmap.Width) && ((yPix - pY) >= 0))
+                                            if (xPix + step < _myBitmap.Width && yPix - pY >= 0)
                                             {
                                                 _myBitmap.SetPixel(xPix + step, yPix - pY, color);
                                             }
@@ -288,32 +289,24 @@ namespace Drawing {
         /// <param name="l">Lightness</param>
         /// <returns>Color object</returns>
         private static Color ColorFromHsla(double h, double s, double l) {
-            double v;
-            double r, g, b;
-
-            r = l;   // Set RGB all equal to L, defaulting to grey.
-            g = l;
-            b = l;
+            var r = l;
+            var g = l;
+            var b = l;
 
             // Standard HSL to RGB conversion. This is described in
             // detail at:
             // http://www.niwa.nu/2013/05/math-behind-colorspace-conversions-rgb-hsl/
-            v = (l <= 0.5) ? (l * (1.0 + s)) : (l + s - l * s);
+            var v = l <= 0.5 ? l * (1.0 + s) : l + s - l * s;
 
             if (v > 0) {
-                double m;
-                double sv;
-                int sextant;
-                double fract, vsf, mid1, mid2;
-
-                m = l + l - v;
-                sv = (v - m) / v;
+                var m = l + l - v;
+                var sv = (v - m) / v;
                 h *= 6.0;
-                sextant = (int)h;
-                fract = h - sextant;
-                vsf = v * sv * fract;
-                mid1 = m + vsf;
-                mid2 = v - vsf;
+                var sextant = (int)h;
+                var fract = h - sextant;
+                var vsf = v * sv * fract;
+                var mid1 = m + vsf;
+                var mid2 = v - vsf;
 
                 switch (sextant) {
                     case 0:
@@ -366,29 +359,27 @@ namespace Drawing {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void MouseClickOnForm(object sender, MouseEventArgs e) {
-            if (zoomCheckbox.Checked) {
-                var box = new Pen(Color.Black);
-                var x = Convert.ToDouble(e.X);
-                _xValue = x;
-                var y = Convert.ToDouble(e.Y);
-                _yValue = y;
+            if (!zoomCheckbox.Checked) return;
+            var x = Convert.ToDouble(e.X);
+            _xValue = x;
+            var y = Convert.ToDouble(e.Y);
+            _yValue = y;
 
-                try {
-                    _zoomScale = Convert.ToInt16(zoomTextBox.Text);
-                } catch(Exception c) {
-                    MessageBox.Show("Error: " + c.Message, "Error");
-                }
-                // Zoom scale has to be above 0, or their is no point in zooming.
-                if (_zoomScale < 1) {
-                    MessageBox.Show("Zoom scale must be above 0");
-                    _zoomScale = 7;
-                    zoomTextBox.Text = "7";
-                    return;
-                }
-
-                var pixelCoord = new ComplexPoint((int)(_xValue - (1005 / (_zoomScale)) / 4), (int)(_yValue - (691 / (_zoomScale)) / 4));//
-                _zoomCoord1 = _myPixelManager.GetAbsoluteMathsCoord(pixelCoord);
+            try {
+                _zoomScale = Convert.ToInt16(zoomTextBox.Text);
+            } catch(Exception c) {
+                MessageBox.Show("Error: " + c.Message, "Error");
             }
+            // Zoom scale has to be above 0, or their is no point in zooming.
+            if (_zoomScale < 1) {
+                MessageBox.Show("Zoom scale must be above 0");
+                _zoomScale = 7;
+                zoomTextBox.Text = "7";
+                return;
+            }
+
+            var pixelCoord = new ComplexPoint((int)(_xValue - 1005 / _zoomScale / 4), (int)(_yValue - 691 / _zoomScale / 4));//
+            _zoomCoord1 = _myPixelManager.GetAbsoluteMathsCoord(pixelCoord);
         }
 
         /// <summary>
@@ -398,45 +389,29 @@ namespace Drawing {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void MouseUpOnForm(object sender, MouseEventArgs e) {
-            if (zoomCheckbox.Checked) {
-                var x = Convert.ToDouble(e.X);
-                var y = Convert.ToDouble(e.Y);
+            if (!zoomCheckbox.Checked) return;
 
-                var pixelCoord = new ComplexPoint((int)(_xValue + (1005 / (_zoomScale)) / 4), (int)(_yValue + (691 / (_zoomScale)) / 4));//
-                _zoomCoord2 = _myPixelManager.GetAbsoluteMathsCoord(pixelCoord);
+            var pixelCoord = new ComplexPoint((int)(_xValue + 1005 / _zoomScale / 4), (int)(_yValue + 691 / _zoomScale / 4));//
+            _zoomCoord2 = _myPixelManager.GetAbsoluteMathsCoord(pixelCoord);
 
-                // Swap to ensure that zoomCoord1 stores the lower-left
-                // coordinate for the zoom region, and zoomCoord2 stores the
-                // upper right coordinate.
-                if (_zoomCoord2.X < _zoomCoord1.X) {
-                    var temp = _zoomCoord1.X;
-                    _zoomCoord1.X = _zoomCoord2.X;
-                    _zoomCoord2.X = temp;
-                }
-                if (_zoomCoord2.Y < _zoomCoord1.Y) {
-                    var temp = _zoomCoord1.Y;
-                    _zoomCoord1.Y = _zoomCoord2.Y;
-                    _zoomCoord2.Y = temp;
-                }
-                yMinCheckBox.Text = Convert.ToString(_zoomCoord1.Y);
-                yMaxCheckBox.Text = Convert.ToString(_zoomCoord2.Y);
-                xMinCheckBox.Text = Convert.ToString(_zoomCoord1.X);
-                xMaxCheckBox.Text = Convert.ToString(_zoomCoord2.X);
-                RenderImage();
+            // Swap to ensure that zoomCoord1 stores the lower-left
+            // coordinate for the zoom region, and zoomCoord2 stores the
+            // upper right coordinate.
+            if (_zoomCoord2.X < _zoomCoord1.X) {
+                var temp = _zoomCoord1.X;
+                _zoomCoord1.X = _zoomCoord2.X;
+                _zoomCoord2.X = temp;
             }
-        }
-
-        /// <summary>
-        /// This will apply the zoom rectangle coordinates to the
-        /// yMin yMax, xMin xMax text boxes.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void button2_Click(object sender, EventArgs e) {
+            if (_zoomCoord2.Y < _zoomCoord1.Y) {
+                var temp = _zoomCoord1.Y;
+                _zoomCoord1.Y = _zoomCoord2.Y;
+                _zoomCoord2.Y = temp;
+            }
             yMinCheckBox.Text = Convert.ToString(_zoomCoord1.Y);
             yMaxCheckBox.Text = Convert.ToString(_zoomCoord2.Y);
             xMinCheckBox.Text = Convert.ToString(_zoomCoord1.X);
             xMaxCheckBox.Text = Convert.ToString(_zoomCoord2.X);
+            RenderImage();
         }
 
         /// <summary>
@@ -445,7 +420,7 @@ namespace Drawing {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void addToFavourites_Click(object sender, EventArgs e) {
+        private void AddToFavourites_Click(object sender, EventArgs e) {
             var promptValue = PromptForNewFavourite.ShowDialog("Name", "New Favourite");
             
             var writer = new StreamWriter(@"C:\Users\" + _userName + "\\mandelbrot_config\\Fav\\" + promptValue + ".txt");
@@ -462,7 +437,7 @@ namespace Drawing {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void openFavourites_Click(object sender, EventArgs e) {
+        private void OpenFavourites_Click(object sender, EventArgs e) {
             var fileContent = File.ReadAllText(@"C:\Users\" + _userName + "\\mandelbrot_config\\Fav\\" + favouritesComboBox.SelectedItem + ".txt");
             var array = fileContent.Split((string[])null, StringSplitOptions.RemoveEmptyEntries);
 
@@ -480,7 +455,7 @@ namespace Drawing {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void favouritesComboBox_DropDown(object sender, EventArgs e) {
+        private void FavouritesComboBox_DropDown(object sender, EventArgs e) {
             var dinfo = new DirectoryInfo(@"C:\Users\" + _userName + "\\mandelbrot_config\\Fav\\");
             var files = dinfo.GetFiles("*.txt");
             foreach (var file in files) {
@@ -498,7 +473,7 @@ namespace Drawing {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void undo_Click(object sender, EventArgs e) {
+        private void Undo_Click(object sender, EventArgs e) {
             try {
                 var fileContent = File.ReadAllText(@"C:\Users\" + _userName + "\\mandelbrot_config\\Undo\\undo" + (_undoNum -= 1) + ".txt");
                 var array1 = fileContent.Split((string[])null, StringSplitOptions.RemoveEmptyEntries);
@@ -520,7 +495,6 @@ namespace Drawing {
         private class ColourTable {
             public readonly int KMax;
             public readonly int NColour;
-            private double _scale;
             private readonly Color[] _colourTable;
 
             /// <summary>
@@ -531,14 +505,14 @@ namespace Drawing {
             public ColourTable(int n, int kMax) {
                 NColour = n;
                 this.KMax = kMax;
-                _scale = ((double)NColour) / kMax;
                 _colourTable = new Color[NColour];
 
-                for (var i = 0; i < NColour; i++) {
-                    var colourIndex = ((double) i) / NColour;
-                    var hue = Math.Pow(colourIndex, 0.25);
-                    _colourTable[i] = ColorFromHsla(hue, 0.9, 0.6);
-                }
+                Parallel.For(0, NColour, step =>
+                {
+                    var colourIndex = (double)step / NColour;
+                    var hue = Math.Pow(colourIndex, 0.30);
+                    _colourTable[step] = ColorFromHsla(hue, 0.9, 0.6);
+                });
             }
 
             /// <summary>
@@ -559,13 +533,8 @@ namespace Drawing {
         }
 
         // Button used to save bitmap at desired location. File type is defaulted as Portable Network Graphics.
-        private void saveImageButton_Click(object sender, EventArgs e) {
+        private void SaveImageButton_Click(object sender, EventArgs e) {
             _myBitmap.Save(@"C:\Users\" + _userName + "\\mandelbrot_config\\Images\\" + saveImageTextBox.Text + ".png");
-        }
-
-        // About label that shows information about author and program when clicked.
-        private void aboutLabel_Click(object sender, EventArgs e) {
-            MessageBox.Show("This program has been made by Joseph Dillon.\nCreated between July 2016-March 2017", "About");
         }
     }
 }

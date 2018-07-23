@@ -14,48 +14,17 @@ namespace Consul.Service
     {
         public static async Task Main(string[] args)
         {
-            var host = new WebHostBuilder()
-                .UseKestrel()
-                .Configure(builder => builder.Map("/health", HealthCheckHandler))
-                .Build();
+           var host = BuildWebHost(args);
 
-            await new ConsulRegistry().Register();
+           await new ConsulRegistry().Register();
 
-            host.Run();
+           await host.RunAsync();
         }
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
+                .UseKestrel()
                 .Build();
-
-
-        private static void HealthCheckHandler(IApplicationBuilder app)
-        {
-            app.Run(async context =>
-            {
-                context.Response.ContentType = context.Request.ContentType;
-                await context.Response.WriteAsync(
-                    JsonConvert.SerializeObject(new
-                    {
-                        StatusCode = context.Response.StatusCode.ToString(),
-                        PathBase = context.Request.PathBase.Value.Trim('/'),
-                        Path = context.Request.Path.Value.Trim('/'),
-                        Method = context.Request.Method,
-                        Scheme = context.Request.Scheme,
-                        ContentType = context.Request.ContentType,
-                        ContentLength = (long?)context.Request.ContentLength,
-                        Content = new StreamReader(context.Request.Body).ReadToEnd(),
-                        QueryString = context.Request.QueryString.ToString(),
-                        Query = context.Request.Query
-                            .ToDictionary(
-                                item => item.Key,
-                                item => item.Value,
-                                StringComparer.OrdinalIgnoreCase)
-                    })
-                );
-            });
-        }
-
     }
 }

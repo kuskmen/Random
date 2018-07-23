@@ -233,7 +233,7 @@
             this.undoButton.Size = new System.Drawing.Size(41, 41);
             this.undoButton.TabIndex = 23;
             this.undoButton.UseVisualStyleBackColor = false;
-            this.undoButton.Click += new System.EventHandler(this.undo_Click);
+            this.undoButton.Click += new System.EventHandler(this.Undo_Click);
             // 
             // groupBox2
             // 
@@ -283,7 +283,7 @@
             this.favouritesComboBox.Name = "favouritesComboBox";
             this.favouritesComboBox.Size = new System.Drawing.Size(121, 21);
             this.favouritesComboBox.TabIndex = 2;
-            this.favouritesComboBox.DropDown += new System.EventHandler(this.favouritesComboBox_DropDown);
+            this.favouritesComboBox.DropDown += new System.EventHandler(this.FavouritesComboBox_DropDown);
             // 
             // openFavouritesButton
             // 
@@ -293,7 +293,7 @@
             this.openFavouritesButton.TabIndex = 1;
             this.openFavouritesButton.Text = "Open Favourite";
             this.openFavouritesButton.UseVisualStyleBackColor = true;
-            this.openFavouritesButton.Click += new System.EventHandler(this.openFavourites_Click);
+            this.openFavouritesButton.Click += new System.EventHandler(this.OpenFavourites_Click);
             // 
             // addToFavouritesButton
             // 
@@ -303,7 +303,7 @@
             this.addToFavouritesButton.TabIndex = 0;
             this.addToFavouritesButton.Text = "Add This to Favourites";
             this.addToFavouritesButton.UseVisualStyleBackColor = true;
-            this.addToFavouritesButton.Click += new System.EventHandler(this.addToFavourites_Click);
+            this.addToFavouritesButton.Click += new System.EventHandler(this.AddToFavourites_Click);
             // 
             // zoomTextBox
             // 
@@ -342,7 +342,7 @@
             this.saveImageButton.TabIndex = 0;
             this.saveImageButton.Text = "Save image";
             this.saveImageButton.UseVisualStyleBackColor = true;
-            this.saveImageButton.Click += new System.EventHandler(this.saveImageButton_Click);
+            this.saveImageButton.Click += new System.EventHandler(this.SaveImageButton_Click);
             // 
             // saveImageTextBox
             // 
@@ -360,17 +360,6 @@
             this.fileNameLabel.Size = new System.Drawing.Size(52, 13);
             this.fileNameLabel.TabIndex = 2;
             this.fileNameLabel.Text = "File name";
-            // 
-            // aboutLabel
-            // 
-            this.aboutLabel.AutoSize = true;
-            this.aboutLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.aboutLabel.Location = new System.Drawing.Point(-1, 636);
-            this.aboutLabel.Name = "aboutLabel";
-            this.aboutLabel.Size = new System.Drawing.Size(35, 13);
-            this.aboutLabel.TabIndex = 23;
-            this.aboutLabel.Text = "About";
-            this.aboutLabel.Click += new System.EventHandler(this.aboutLabel_Click);
             // 
             // Mandelbrot
             // 

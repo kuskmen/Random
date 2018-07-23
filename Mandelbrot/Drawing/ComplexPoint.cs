@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Drawing {
+﻿namespace Drawing {
     /// <summary>
     /// ComplexPoint class is used encapsulate a single complex point
     /// Z = x + i*y where x and y are the real and imaginary parts respectively.
@@ -18,14 +16,6 @@ namespace Drawing {
         public ComplexPoint(double x, double y) {
             this.X = x;
             this.Y = y;
-        }
-
-        /// <summary>
-        /// Calculate the modulus |Z| = Sqrt(x*x + y*y).
-        /// </summary>
-        /// <returns>Modulus of complex point</returns>
-        public double DoModulus() {
-            return Math.Sqrt(X * X + Y * Y);
         }
 
         /// <summary>
