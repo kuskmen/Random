@@ -2,21 +2,25 @@
 using System.Drawing;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Drawing {
+namespace Drawing
+{
     /// <summary>
     /// Mandelbrot class extends Form, used to render the Mandelbrot set,
     /// with user controls allowing selection of the region to plot,
     /// resolution, maximum iteration count etc.
     /// </summary>
-    public partial class Mandelbrot : Form {
+    public partial class Mandelbrot : Form
+    {
 
         /// <summary>
         /// Constructor.
         /// </summary>
-        public Mandelbrot() {
+        public Mandelbrot()
+        {
             InitializeComponent();
         }
 
@@ -32,7 +36,7 @@ namespace Drawing {
         private int _zoomScale = 7;                                  // Default amount to zoom in by.
 
         private Graphics _g;                                         // Graphics object: all graphical rendering is done on this object.
-        private Bitmap _myBitmap;                                    // Bitmap used to draw images.
+        private LockedBitmap _myBitmap;                                    // Bitmap used to draw images.
         private double _xValue;                                      // Save x coordinate on screen click.
         private double _yValue;                                      // Save y coordinate on screen click.
         private int _undoNum = 0;                                    // Undo count, used when undoing user opertions in the form controls.
@@ -44,16 +48,17 @@ namespace Drawing {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Form1_Load(object sender, EventArgs e) {
+        private void Form1_Load(object sender, EventArgs e)
+        {
             // Get current user name. Used to manage their favourites (file storage),
             // and also undo-history storage.
             _userName = Environment.UserName;
 
             // Create graphics object for Mandelbrot rendering.
-            _myBitmap = new Bitmap(ClientRectangle.Width,
+            _myBitmap = new LockedBitmap(ClientRectangle.Width,
                                   ClientRectangle.Height,
-                                  System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-            _g = Graphics.FromImage(_myBitmap);
+                                  System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+            _g = Graphics.FromImage(_myBitmap.Bitmap);
             // Set the background of the form to white.
             _g.Clear(Color.White);
 
@@ -68,19 +73,22 @@ namespace Drawing {
             Array.ForEach(Directory.GetFiles(@"c:\Users\" + _userName + "\\mandelbrot_config\\Undo\\"), File.Delete);
             var dinfo = new DirectoryInfo(@"C:\Users\" + _userName + "\\mandelbrot_config\\Fav\\");
             var files = dinfo.GetFiles("*.txt");
-            foreach (var file in files) {
+            foreach (var file in files)
+            {
                 var name = file.Name.Substring(0, file.Name.LastIndexOf(".txt", StringComparison.OrdinalIgnoreCase));
-                if (name.Equals("")) {
+                if (name.Equals(""))
+                {
                     File.Delete(@"C:\Users\" + _userName + "\\mandelbrot_config\\Fav\\.txt");
-                } else {
+                }
+                else
+                {
                     favouritesComboBox.Items.Add(name);
                 }
             }
 
             // Initialize undo.
             var writer = new StreamWriter(@"C:\Users\" + _userName + "\\mandelbrot_config\\Undo\\undo" + (_undoNum -= 1) + ".txt");
-            writer.Write(pixelStepTextBox.Text +
-                Environment.NewLine +
+            writer.Write(
                 iterationCountTextBox.Text +
                 Environment.NewLine +
                 yMinCheckBox.Text +
@@ -100,22 +108,23 @@ namespace Drawing {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void generate_Click(object sender, EventArgs e) {
+        private void Generate_Click(object sender, EventArgs e)
+        {
             RenderImage();
         }
 
-        private void RenderImage() {
-            try {
+        private void RenderImage()
+        {
+            try
+            {
                 statusLabel.Text = "Status: Rendering";
-                if (Convert.ToBoolean(pixelStepTextBox.Text.Equals("")) ||
-                    Convert.ToBoolean(pixelStepTextBox.Text.Equals("0")) ||
-                    Convert.ToBoolean(iterationCountTextBox.Text.Equals("")) ||
+                if (Convert.ToBoolean(iterationCountTextBox.Text.Equals("")) ||
                     Convert.ToBoolean(yMinCheckBox.Text.Equals("")) ||
                     Convert.ToBoolean(yMaxCheckBox.Text.Equals("")) ||
                     Convert.ToBoolean(xMinCheckBox.Text.Equals("")) ||
-                    Convert.ToBoolean(xMaxCheckBox.Text.Equals(""))) {
+                    Convert.ToBoolean(xMaxCheckBox.Text.Equals("")))
+                {
                     // Choose default parameters and warn the user if the settings are all empty.
-                    pixelStepTextBox.Text = "1";
                     iterationCountTextBox.Text = "85";
                     yMinCheckBox.Text = "-1";
                     yMaxCheckBox.Text = "1";
@@ -137,7 +146,8 @@ namespace Drawing {
                 _numColours = _kMax;
 
                 // If colourTable is not yet created or kMax has changed, create colourTable.
-                if (_colourTable == null || _kMax != _colourTable.KMax || _numColours != _colourTable.NColour) {
+                if (_colourTable == null || _kMax != _colourTable.KMax || _numColours != _colourTable.NColour)
+                {
                     _colourTable = new ColourTable(_numColours, _kMax);
                 }
 
@@ -153,9 +163,9 @@ namespace Drawing {
                 // Clear any existing graphics content.
                 _g.Clear(Color.White);
 
-                    // Initialise working variables.
-                var kLast = -1;
-                var colorLast = Color.Red;
+                // Initialise working variables.
+                const int kLast = -1;
+                var colorLast = Color.Blue;
 
                 // Get screen boundary (lower left & upper right). This is
                 // used when calculating the pixel scaling factors.
@@ -167,14 +177,9 @@ namespace Drawing {
                 _myPixelManager = new ScreenPixelManage(_g, screenBottomLeft, screenTopRight);
 
                 // The pixel step size defines the increment in screen pixels for each point
-                // at which the Mandelbrot calcualtion will be done. e.g. a Step of 5 means
-                // that the calcualtion will be done a 5-pixel increments. The X & Y increments
-                // are the same.
-                //
+                // at which the Mandelbrot calcualtion will be done.
                 // This increment is converted to mathematical coordinates.
-                int xyPixelStep = Convert.ToInt16(pixelStepTextBox.Text);
-                var pixelStep = new ComplexPoint(xyPixelStep, xyPixelStep);
-                var xyStep = _myPixelManager.GetDeltaMathsCoord(pixelStep);
+                var xyStep = _myPixelManager.GetDeltaMathsCoord(new ComplexPoint(1, 1));
 
                 // Start stopwatch - used to measure performance improvements
                 // (from improving the efficiency of the maths implementation).
@@ -183,9 +188,11 @@ namespace Drawing {
 
                 // Main loop, nested over Y (outer) and X (inner) values.
                 var yPix = _myBitmap.Height - 1;
-                for (var y = _yMin; y < _yMax; y += xyStep.Y) {
+                for (var y = _yMin; y < _yMax; y += xyStep.Y)
+                {
                     var xPix = 0;
-                    for (var x = _xMin; x < _xMax; x += xyStep.X) {
+                    for (var x = _xMin; x < _xMax; x += xyStep.X)
+                    {
                         // Create complex point C = x + i*y.
                         var c = new ComplexPoint(x, y);
 
@@ -194,29 +201,34 @@ namespace Drawing {
 
                         // Do the main Mandelbrot calculation. Iterate until the equation
                         // converges or the maximum number of iterations is reached.
-                        var k = 0;
                         // TODO: Parallelization
+                        var k = 0;
                         double modulusSquared;
-                        do {
+                        do
+                        {
                             zk = zk.DoCmplxSqPlusConst(c);
                             modulusSquared = zk.DoMoulusSq();
                             k++;
                         } while (modulusSquared <= 4.0 && k < _kMax);
 
-                        if (k < _kMax) {
+                        if (k < _kMax)
+                        {
                             // Max number of iterations was not reached. This means that the
                             // equation converged. Now assign a colour to the current pixel that
                             // depends on the number of iterations, k, that were done.
 
                             Color color;
-                            if (k == kLast) {
+                            if (k == kLast)
+                            {
                                 // If the iteration count is the same as the last count, re-use the
                                 // last pen. This avoids re-calculating colour factors which is
                                 // computationally intensive. We benefit from this often because
                                 // adjacent pixels are often the same colour, especially in large parts
                                 // of the Mandelbrot set that are away from the areas of detail.
                                 color = colorLast;
-                            } else {
+                            }
+                            else
+                            {
                                 // Calculate coluor scaling, from k. We don't use complicated/fancy colour
                                 // lookup tables. Instead, the following simple conversion works well:
                                 //
@@ -240,42 +252,30 @@ namespace Drawing {
                             }
 
                             // Draw single pixel
-                            if (xyPixelStep == 1) {
-                                // Pixel step is 1, set a single pixel.
-                                if (xPix < _myBitmap.Width && yPix >= 0) {
-                                    _myBitmap.SetPixel(xPix, yPix, color);
-                                }
-                            } else {
-                                // Pixel step is > 1, set a square of pixels.
-                                Parallel.For(0, xyPixelStep,
-                                    new ParallelOptions {MaxDegreeOfParallelism = Environment.ProcessorCount}, step =>
-                                    {
-                                        for (var pY = 0; pY < xyPixelStep; pY++)
-                                        {
-                                            if (xPix + step < _myBitmap.Width && yPix - pY >= 0)
-                                            {
-                                                _myBitmap.SetPixel(xPix + step, yPix - pY, color);
-                                            }
-                                        }
-                                    });
+                            if (xPix < _myBitmap.Width && yPix >= 0)
+                            {
+                                _myBitmap.SetPixel(xPix, yPix, color);
                             }
                         }
-                        xPix += xyPixelStep;
+
+                        xPix++;
                     }
-                    yPix -= xyPixelStep;
+                    yPix--;
                 }
                 // Finished rendering. Stop the stopwatch and show the elapsed time.
                 sw.Stop();
                 Refresh();
-                stopwatchLabel.Text = Convert.ToString(sw.Elapsed.TotalSeconds);
+                stopwatchLabel.Text = sw.Elapsed.TotalSeconds.ToString(CultureInfo.InvariantCulture);
                 statusLabel.Text = "Status: Render complete";
 
                 // Save current settings to undo file.
                 var writer = new StreamWriter(@"C:\Users\" + _userName + "\\mandelbrot_config\\Undo\\undo" + _undoNum + ".txt");
-                writer.Write(pixelStepTextBox.Text + Environment.NewLine + iterationCountTextBox.Text + Environment.NewLine + yMinCheckBox.Text + Environment.NewLine + yMaxCheckBox.Text + Environment.NewLine + xMinCheckBox.Text + Environment.NewLine + xMaxCheckBox.Text);
+                writer.Write(iterationCountTextBox.Text + Environment.NewLine + yMinCheckBox.Text + Environment.NewLine + yMaxCheckBox.Text + Environment.NewLine + xMinCheckBox.Text + Environment.NewLine + xMaxCheckBox.Text);
                 writer.Close();
                 writer.Dispose();
-            } catch (Exception e2) {
+            }
+            catch (Exception e2)
+            {
                 MessageBox.Show("Exception Trapped: " + e2.Message, "Error");
                 statusLabel.Text = "Status: Error";
             }
@@ -288,7 +288,8 @@ namespace Drawing {
         /// <param name="s">Saturation</param>
         /// <param name="l">Lightness</param>
         /// <returns>Color object</returns>
-        private static Color ColorFromHsla(double h, double s, double l) {
+        private static Color ColorFromHsla(double h, double s, double l)
+        {
             var r = l;
             var g = l;
             var b = l;
@@ -298,7 +299,8 @@ namespace Drawing {
             // http://www.niwa.nu/2013/05/math-behind-colorspace-conversions-rgb-hsl/
             var v = l <= 0.5 ? l * (1.0 + s) : l + s - l * s;
 
-            if (v > 0) {
+            if (v > 0)
+            {
                 var m = l + l - v;
                 var sv = (v - m) / v;
                 h *= 6.0;
@@ -308,7 +310,8 @@ namespace Drawing {
                 var mid1 = m + vsf;
                 var mid2 = v - vsf;
 
-                switch (sextant) {
+                switch (sextant)
+                {
                     case 0:
                         r = v;
                         g = mid1;
@@ -358,20 +361,25 @@ namespace Drawing {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void MouseClickOnForm(object sender, MouseEventArgs e) {
+        private void MouseClickOnForm(object sender, MouseEventArgs e)
+        {
             if (!zoomCheckbox.Checked) return;
             var x = Convert.ToDouble(e.X);
             _xValue = x;
             var y = Convert.ToDouble(e.Y);
             _yValue = y;
 
-            try {
+            try
+            {
                 _zoomScale = Convert.ToInt16(zoomTextBox.Text);
-            } catch(Exception c) {
+            }
+            catch (Exception c)
+            {
                 MessageBox.Show("Error: " + c.Message, "Error");
             }
             // Zoom scale has to be above 0, or their is no point in zooming.
-            if (_zoomScale < 1) {
+            if (_zoomScale < 1)
+            {
                 MessageBox.Show("Zoom scale must be above 0");
                 _zoomScale = 7;
                 zoomTextBox.Text = "7";
@@ -388,7 +396,8 @@ namespace Drawing {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void MouseUpOnForm(object sender, MouseEventArgs e) {
+        private void MouseUpOnForm(object sender, MouseEventArgs e)
+        {
             if (!zoomCheckbox.Checked) return;
 
             var pixelCoord = new ComplexPoint((int)(_xValue + 1005 / _zoomScale / 4), (int)(_yValue + 691 / _zoomScale / 4));//
@@ -397,12 +406,14 @@ namespace Drawing {
             // Swap to ensure that zoomCoord1 stores the lower-left
             // coordinate for the zoom region, and zoomCoord2 stores the
             // upper right coordinate.
-            if (_zoomCoord2.X < _zoomCoord1.X) {
+            if (_zoomCoord2.X < _zoomCoord1.X)
+            {
                 var temp = _zoomCoord1.X;
                 _zoomCoord1.X = _zoomCoord2.X;
                 _zoomCoord2.X = temp;
             }
-            if (_zoomCoord2.Y < _zoomCoord1.Y) {
+            if (_zoomCoord2.Y < _zoomCoord1.Y)
+            {
                 var temp = _zoomCoord1.Y;
                 _zoomCoord1.Y = _zoomCoord2.Y;
                 _zoomCoord2.Y = temp;
@@ -420,11 +431,12 @@ namespace Drawing {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void AddToFavourites_Click(object sender, EventArgs e) {
+        private void AddToFavourites_Click(object sender, EventArgs e)
+        {
             var promptValue = PromptForNewFavourite.ShowDialog("Name", "New Favourite");
-            
+
             var writer = new StreamWriter(@"C:\Users\" + _userName + "\\mandelbrot_config\\Fav\\" + promptValue + ".txt");
-            writer.Write(pixelStepTextBox.Text + Environment.NewLine + iterationCountTextBox.Text + Environment.NewLine + yMinCheckBox.Text + Environment.NewLine + yMaxCheckBox.Text + Environment.NewLine + xMinCheckBox.Text + Environment.NewLine + xMaxCheckBox.Text);
+            writer.Write(iterationCountTextBox.Text + Environment.NewLine + yMinCheckBox.Text + Environment.NewLine + yMaxCheckBox.Text + Environment.NewLine + xMinCheckBox.Text + Environment.NewLine + xMaxCheckBox.Text);
             writer.Close();
             writer.Dispose();
 
@@ -437,11 +449,11 @@ namespace Drawing {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OpenFavourites_Click(object sender, EventArgs e) {
+        private void OpenFavourites_Click(object sender, EventArgs e)
+        {
             var fileContent = File.ReadAllText(@"C:\Users\" + _userName + "\\mandelbrot_config\\Fav\\" + favouritesComboBox.SelectedItem + ".txt");
             var array = fileContent.Split((string[])null, StringSplitOptions.RemoveEmptyEntries);
 
-            pixelStepTextBox.Text = array[0];
             iterationCountTextBox.Text = array[1];
             yMinCheckBox.Text = array[2];
             yMaxCheckBox.Text = array[3];
@@ -455,15 +467,16 @@ namespace Drawing {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void FavouritesComboBox_DropDown(object sender, EventArgs e) {
+        private void FavouritesComboBox_DropDown(object sender, EventArgs e)
+        {
             var dinfo = new DirectoryInfo(@"C:\Users\" + _userName + "\\mandelbrot_config\\Fav\\");
             var files = dinfo.GetFiles("*.txt");
-            foreach (var file in files) {
+            foreach (var file in files)
+            {
                 var name = file.Name.Substring(0, file.Name.LastIndexOf(".txt", StringComparison.OrdinalIgnoreCase));
-                if (name.Equals("")) {
-                    File.Delete(@"C:\Users\" + _userName + "\\mandelbrot_config\\Fav\\.txt");
-                    favouritesComboBox.Items.Remove(name);
-                }
+                if (!string.IsNullOrEmpty(name)) continue;
+                File.Delete(@"C:\Users\" + _userName + "\\mandelbrot_config\\Fav\\.txt");
+                favouritesComboBox.Items.Remove(name);
             }
         }
 
@@ -473,18 +486,21 @@ namespace Drawing {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Undo_Click(object sender, EventArgs e) {
-            try {
+        private void Undo_Click(object sender, EventArgs e)
+        {
+            try
+            {
                 var fileContent = File.ReadAllText(@"C:\Users\" + _userName + "\\mandelbrot_config\\Undo\\undo" + (_undoNum -= 1) + ".txt");
                 var array1 = fileContent.Split((string[])null, StringSplitOptions.RemoveEmptyEntries);
 
-                pixelStepTextBox.Text = array1[0];
-                iterationCountTextBox.Text = array1[1];
-                yMinCheckBox.Text = array1[2];
-                yMaxCheckBox.Text = array1[3];
-                xMinCheckBox.Text = array1[4];
-                xMaxCheckBox.Text = array1[5];
-            } catch (Exception e3) {
+                iterationCountTextBox.Text = array1[0];
+                yMinCheckBox.Text = array1[1];
+                yMaxCheckBox.Text = array1[2];
+                xMinCheckBox.Text = array1[3];
+                xMaxCheckBox.Text = array1[4];
+            }
+            catch (Exception e3)
+            {
                 MessageBox.Show("Unable to Undo: " + e3.Message, "Error");
             }
         }
@@ -492,7 +508,8 @@ namespace Drawing {
         /// <summary>
         /// Class used for colour lookup table.
         /// </summary>
-        private class ColourTable {
+        private class ColourTable
+        {
             public readonly int KMax;
             public readonly int NColour;
             private readonly Color[] _colourTable;
@@ -502,7 +519,8 @@ namespace Drawing {
             /// </summary>
             /// <param name="n"></param>
             /// <param name="kMax"></param>
-            public ColourTable(int n, int kMax) {
+            public ColourTable(int n, int kMax)
+            {
                 NColour = n;
                 this.KMax = kMax;
                 _colourTable = new Color[NColour];
@@ -520,21 +538,24 @@ namespace Drawing {
             /// </summary>
             /// <param name="k"></param>
             /// <returns></returns>
-            public Color GetColour(int k) {
+            public Color GetColour(int k)
+            {
                 return _colourTable[k];
-            } 
+            }
         }
 
         // Mandelbrot_Paint handler to draw the image.
-        private void Mandelbrot_Paint(object sender, PaintEventArgs e) {
+        private void Mandelbrot_Paint(object sender, PaintEventArgs e)
+        {
             var graphicsObj = e.Graphics;
-            graphicsObj.DrawImage(_myBitmap, 0, 0, _myBitmap.Width, _myBitmap.Height);
+            graphicsObj.DrawImage(_myBitmap.Bitmap, 0, 0, _myBitmap.Width, _myBitmap.Height);
             graphicsObj.Dispose();
         }
 
         // Button used to save bitmap at desired location. File type is defaulted as Portable Network Graphics.
-        private void SaveImageButton_Click(object sender, EventArgs e) {
-            _myBitmap.Save(@"C:\Users\" + _userName + "\\mandelbrot_config\\Images\\" + saveImageTextBox.Text + ".png");
+        private void SaveImageButton_Click(object sender, EventArgs e)
+        {
+            _myBitmap.Bitmap.Save(@"C:\Users\" + _userName + "\\mandelbrot_config\\Images\\" + saveImageTextBox.Text + ".png");
         }
     }
 }

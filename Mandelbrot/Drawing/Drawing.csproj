@@ -57,6 +57,7 @@
     <Compile Include="GraphicalOverlay.designer.cs">
       <DependentUpon>GraphicalOverlay.cs</DependentUpon>
     </Compile>
+    <Compile Include="LockedBitmap.cs" />
     <Compile Include="Mandelbrot.cs">
       <SubType>Form</SubType>
     </Compile>
