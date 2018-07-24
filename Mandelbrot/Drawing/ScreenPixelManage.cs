@@ -46,19 +46,6 @@ namespace Drawing {
         }
 
         /// <summary>
-        /// Convert from maths coordinates to pixel coordinates.
-        /// </summary>
-        /// <param name="cmplxPoint">Complex number (mathematical coordiantes)</param>
-        /// <returns>Pixel coordinate, also a complex number but represented
-        /// as an X,Y screen coordinate</returns>
-        public PixelCoord GetPixelCoord(ComplexPoint cmplxPoint) {
-            var result = new PixelCoord();
-            result.XPixel = (int) (_convConstX1 * cmplxPoint.X - _convConstX2);
-            result.YPixel = (int) (_convConstY1 - _convConstY2 * cmplxPoint.Y);
-            return result;
-        }
-
-        /// <summary>
         /// Converts a pixel-coordinate increment (small change in X, Y
         /// screen coordiante) to the corresponding increment in mathematical
         /// coordinates. This is used, for example, when drawing the Mandlebrot

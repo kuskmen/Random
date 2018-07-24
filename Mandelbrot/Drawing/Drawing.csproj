@@ -51,12 +51,15 @@
     <Compile Include="Canvas.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Keys.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="GraphicalOverlay.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="GraphicalOverlay.designer.cs">
       <DependentUpon>GraphicalOverlay.cs</DependentUpon>
     </Compile>
+    <Compile Include="LockedBitmap.cs" />
     <Compile Include="Mandelbrot.cs">
       <SubType>Form</SubType>
     </Compile>
