@@ -1,46 +1,30 @@
-﻿namespace Drawing {
-    /// <summary>
-    /// ComplexPoint class is used encapsulate a single complex point
-    /// Z = x + i*y where x and y are the real and imaginary parts respectively.
-    /// A number of complex arithmetic utility methods are provided.
-    /// </summary>
-    public struct ComplexPoint {
-        public double X;
-        public double Y;
+﻿namespace Drawing
+{
+    public struct ComplexPoint
+    {
+        public double Real { get; set; }
+        public double Imaginary { get; set; }
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="x">real part of complex point</param>
-        /// <param name="y">imaginary part of complex point</param>
-        public ComplexPoint(double x, double y) {
-            this.X = x;
-            this.Y = y;
+        public ComplexPoint(double real, double imaginary)
+        {
+            this.Real = real;
+            this.Imaginary = imaginary;
         }
 
-        /// <summary>
-        /// Calculate modulus squared |Z|**2 = X*x + y*y.
-        /// </summary>
-        /// <returns>Modulus squared</returns>
-        public double DoMoulusSq() {
-            return X * X + Y * Y;
-        }
+        public static double ModulusSquared(ComplexPoint point) => point.Real * point.Real + point.Imaginary * point.Imaginary;
 
-        /// <summary>
-        /// Calculate complex square plus complex constant. The result
-        /// is another complex number.
-        /// </summary>
-        /// <param name="arg"></param>
-        /// <returns>Z**2 + arg</returns>
-        public ComplexPoint DoCmplxSqPlusConst(ComplexPoint arg) {
-            var result = new ComplexPoint(0, 0)
+        public static ComplexPoint Square(ComplexPoint point)
+            => new ComplexPoint(0, 0)
             {
-                X = X * X - Y * Y,
-                Y = 2 * X * Y
+                Real = point.Real * point.Real - point.Imaginary * point.Imaginary,
+                Imaginary = 2 * point.Real * point.Imaginary
             };
-            result.X += arg.X;
-            result.Y += arg.Y;
-            return result;
+
+        public static ComplexPoint Add(ComplexPoint right, ComplexPoint other)
+        {
+            right.Real += other.Real;
+            right.Imaginary += other.Imaginary;
+            return right;
         }
     }
 }

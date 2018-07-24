@@ -106,6 +106,7 @@ namespace Drawing
             {
                 _colourTable = new ColourTable(iterations);
             }
+
             RenderImage(iterations);
         }
 
@@ -176,12 +177,12 @@ namespace Drawing
                 var sw = new Stopwatch();
                 sw.Start();
 
-                // Main loop, nested over Y (outer) and X (inner) values.
+                // Main loop, nested over Imaginary (outer) and Real (inner) values.
                 var yPix = _myBitmap.Height - 1;
-                for (var y = _yMin; y < _yMax; y += xyStep.Y)
+                for (var y = _yMin; y < _yMax; y += xyStep.Imaginary)
                 {
                     var xPix = 0;
-                    for (var x = _xMin; x < _xMax; x += xyStep.X)
+                    for (var x = _xMin; x < _xMax; x += xyStep.Real)
                     {
                         // Create complex point C = x + i*y.
                         var c = new ComplexPoint(x, y);
@@ -196,9 +197,10 @@ namespace Drawing
                         double modulusSquared;
                         do
                         {
-                            zk = zk.DoCmplxSqPlusConst(c);
-                            modulusSquared = zk.DoMoulusSq();
                             k++;
+                            zk = ComplexPoint.Square(zk);
+                            zk = ComplexPoint.Add(zk, c);
+                            modulusSquared = ComplexPoint.ModulusSquared(zk);
                         } while (modulusSquared <= 4.0 && k < iterations);
 
                         if (k < iterations)
@@ -241,7 +243,6 @@ namespace Drawing
                                 colorLast = color;
                             }
 
-                            // Draw single pixel
                             if (xPix < _myBitmap.Width && yPix >= 0)
                             {
                                 _myBitmap.SetPixel(xPix, yPix, color);
@@ -259,10 +260,13 @@ namespace Drawing
                 statusLabel.Text = "Status: Render complete";
 
                 // Save current settings to undo file.
-                var writer = new StreamWriter(@"C:\Users\" + _userName + "\\mandelbrot_config\\Undo\\undo" + _undoNum + ".txt");
-                writer.Write(iterationCountTextBox.Text + Environment.NewLine + yMinCheckBox.Text + Environment.NewLine + yMaxCheckBox.Text + Environment.NewLine + xMinCheckBox.Text + Environment.NewLine + xMaxCheckBox.Text);
-                writer.Close();
-                writer.Dispose();
+                using (var writer =
+                    new StreamWriter(@"C:\Users\" + _userName + "\\mandelbrot_config\\Undo\\undo" + _undoNum + ".txt"))
+                {
+                    writer.Write(iterationCountTextBox.Text + Environment.NewLine + yMinCheckBox.Text +
+                                 Environment.NewLine + yMaxCheckBox.Text + Environment.NewLine + xMinCheckBox.Text +
+                                 Environment.NewLine + xMaxCheckBox.Text);
+                }
             }
             catch (Exception e2)
             {
@@ -396,22 +400,22 @@ namespace Drawing
             // Swap to ensure that zoomCoord1 stores the lower-left
             // coordinate for the zoom region, and zoomCoord2 stores the
             // upper right coordinate.
-            if (_zoomCoord2.X < _zoomCoord1.X)
+            if (_zoomCoord2.Real < _zoomCoord1.Real)
             {
-                var temp = _zoomCoord1.X;
-                _zoomCoord1.X = _zoomCoord2.X;
-                _zoomCoord2.X = temp;
+                var temp = _zoomCoord1.Real;
+                _zoomCoord1.Real = _zoomCoord2.Real;
+                _zoomCoord2.Real = temp;
             }
-            if (_zoomCoord2.Y < _zoomCoord1.Y)
+            if (_zoomCoord2.Imaginary < _zoomCoord1.Imaginary)
             {
-                var temp = _zoomCoord1.Y;
-                _zoomCoord1.Y = _zoomCoord2.Y;
-                _zoomCoord2.Y = temp;
+                var temp = _zoomCoord1.Imaginary;
+                _zoomCoord1.Imaginary = _zoomCoord2.Imaginary;
+                _zoomCoord2.Imaginary = temp;
             }
-            yMinCheckBox.Text = Convert.ToString(_zoomCoord1.Y);
-            yMaxCheckBox.Text = Convert.ToString(_zoomCoord2.Y);
-            xMinCheckBox.Text = Convert.ToString(_zoomCoord1.X);
-            xMaxCheckBox.Text = Convert.ToString(_zoomCoord2.X);
+            yMinCheckBox.Text = Convert.ToString(_zoomCoord1.Imaginary);
+            yMaxCheckBox.Text = Convert.ToString(_zoomCoord2.Imaginary);
+            xMinCheckBox.Text = Convert.ToString(_zoomCoord1.Real);
+            xMaxCheckBox.Text = Convert.ToString(_zoomCoord2.Real);
 
             RenderImage(Convert.ToInt32(iterationCountTextBox.Text));
         }
