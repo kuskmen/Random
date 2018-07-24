@@ -67,7 +67,7 @@
             this.generatePatternButton.TabIndex = 0;
             this.generatePatternButton.Text = "Generate Pattern";
             this.generatePatternButton.UseVisualStyleBackColor = false;
-            this.generatePatternButton.Click += new System.EventHandler(this.Generate_Click);
+            this.generatePatternButton.Click += new System.EventHandler(this.RenderMandelbrot);
             // 
             // xMinCheckBox
             // 

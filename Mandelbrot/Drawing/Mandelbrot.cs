@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Diagnostics;
@@ -15,10 +16,6 @@ namespace Drawing
     /// </summary>
     public partial class Mandelbrot : Form
     {
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
         public Mandelbrot()
         {
             InitializeComponent();
@@ -31,17 +28,16 @@ namespace Drawing
         private double _yMax = 0.0;                                  // Default maximum Y for the set to render.
         private double _xMin = -2.0;                                 // Default minimum X for the set to render.
         private double _xMax = 1.0;                                  // Default maximum X for the set to render.
-        private int _kMax = 50;                                      // Default maximum number of iterations for Mandelbrot calculation.
-        private int _numColours = 85;                                // Default number of colours to use in colour table.
         private int _zoomScale = 7;                                  // Default amount to zoom in by.
 
         private Graphics _g;                                         // Graphics object: all graphical rendering is done on this object.
-        private LockedBitmap _myBitmap;                                    // Bitmap used to draw images.
+        private LockedBitmap _myBitmap;                              // Bitmap used to draw images.
         private double _xValue;                                      // Save x coordinate on screen click.
         private double _yValue;                                      // Save y coordinate on screen click.
         private int _undoNum = 0;                                    // Undo count, used when undoing user opertions in the form controls.
         private string _userName;                                    // User name.
-        private ColourTable _colourTable = null;                     // Colour table.
+        private ColourTable _colourTable;                            // Colour table.
+        private readonly IDictionary<string, string> _cache = new Dictionary<string, string>();
 
         /// <summary>
         /// Load the main form for this application.
@@ -87,19 +83,10 @@ namespace Drawing
             }
 
             // Initialize undo.
-            var writer = new StreamWriter(@"C:\Users\" + _userName + "\\mandelbrot_config\\Undo\\undo" + (_undoNum -= 1) + ".txt");
-            writer.Write(
-                iterationCountTextBox.Text +
-                Environment.NewLine +
-                yMinCheckBox.Text +
-                Environment.NewLine +
-                yMaxCheckBox.Text +
-                Environment.NewLine +
-                xMinCheckBox.Text +
-                Environment.NewLine +
-                xMaxCheckBox.Text);
-            writer.Close();
-            writer.Dispose();
+            using (var writer = new StreamWriter(@"C:\Users\" + _userName + "\\mandelbrot_config\\Undo\\undo" + (_undoNum -= 1) + ".txt"))
+            {
+                writer.Write($"{iterationCountTextBox.Text}\r\n{yMinCheckBox.Text}\r\n{yMaxCheckBox.Text}\r\n{xMinCheckBox.Text}\r\n{xMaxCheckBox.Text}");
+            }
         }
 
         /// <summary>
@@ -108,21 +95,35 @@ namespace Drawing
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Generate_Click(object sender, EventArgs e)
+        private void RenderMandelbrot(object sender, EventArgs e)
         {
-            RenderImage();
+            _cache.TryGetValue(Keys.Iterations, out var previousIterations);
+            _cache.AddOrUpdate(Keys.Iterations, iterationCountTextBox.Text);
+
+            var iterations = Convert.ToInt32(_cache[Keys.Iterations]);
+            // If colourTable is not yet created or kMax has changed, create colourTable.
+            if (_colourTable == null || iterations != Convert.ToInt32(previousIterations))
+            {
+                _colourTable = new ColourTable(iterations);
+            }
+            RenderImage(iterations);
         }
 
-        private void RenderImage()
+        private bool IsFormInvalid()
+        {
+            return iterationCountTextBox.Text.Equals("") ||
+                   yMinCheckBox.Text.Equals("") ||
+                   yMaxCheckBox.Text.Equals("") ||
+                   xMinCheckBox.Text.Equals("") ||
+                   xMaxCheckBox.Text.Equals("");
+        }
+
+        private void RenderImage(int iterations)
         {
             try
             {
                 statusLabel.Text = "Status: Rendering";
-                if (Convert.ToBoolean(iterationCountTextBox.Text.Equals("")) ||
-                    Convert.ToBoolean(yMinCheckBox.Text.Equals("")) ||
-                    Convert.ToBoolean(yMaxCheckBox.Text.Equals("")) ||
-                    Convert.ToBoolean(xMinCheckBox.Text.Equals("")) ||
-                    Convert.ToBoolean(xMaxCheckBox.Text.Equals("")))
+                if (IsFormInvalid())
                 {
                     // Choose default parameters and warn the user if the settings are all empty.
                     iterationCountTextBox.Text = "85";
@@ -133,23 +134,12 @@ namespace Drawing
                     MessageBox.Show("Invalid fields detected. Using default values.");
                     statusLabel.Text = "Status: Error";
                     return;
-
                 }
 
                 // Show zoom and undo controls.
                 zoomCheckbox.Show();
                 undoButton.Show();
                 _undoNum++;
-
-                // Mandelbrot iteration count.
-                _kMax = Convert.ToInt32(iterationCountTextBox.Text);
-                _numColours = _kMax;
-
-                // If colourTable is not yet created or kMax has changed, create colourTable.
-                if (_colourTable == null || _kMax != _colourTable.KMax || _numColours != _colourTable.NColour)
-                {
-                    _colourTable = new ColourTable(_numColours, _kMax);
-                }
 
                 // Get the x, y range (mathematical coordinates) to plot.
                 _yMin = Convert.ToDouble(yMinCheckBox.Text);
@@ -209,9 +199,9 @@ namespace Drawing
                             zk = zk.DoCmplxSqPlusConst(c);
                             modulusSquared = zk.DoMoulusSq();
                             k++;
-                        } while (modulusSquared <= 4.0 && k < _kMax);
+                        } while (modulusSquared <= 4.0 && k < iterations);
 
-                        if (k < _kMax)
+                        if (k < iterations)
                         {
                             // Max number of iterations was not reached. This means that the
                             // equation converged. Now assign a colour to the current pixel that
@@ -422,7 +412,8 @@ namespace Drawing
             yMaxCheckBox.Text = Convert.ToString(_zoomCoord2.Y);
             xMinCheckBox.Text = Convert.ToString(_zoomCoord1.X);
             xMaxCheckBox.Text = Convert.ToString(_zoomCoord2.X);
-            RenderImage();
+
+            RenderImage(Convert.ToInt32(iterationCountTextBox.Text));
         }
 
         /// <summary>
@@ -510,24 +501,19 @@ namespace Drawing
         /// </summary>
         private class ColourTable
         {
-            public readonly int KMax;
-            public readonly int NColour;
             private readonly Color[] _colourTable;
 
             /// <summary>
             /// Constructor. Creates lookup table.
             /// </summary>
-            /// <param name="n"></param>
             /// <param name="kMax"></param>
-            public ColourTable(int n, int kMax)
+            public ColourTable(int kMax)
             {
-                NColour = n;
-                this.KMax = kMax;
-                _colourTable = new Color[NColour];
+                _colourTable = new Color[kMax];
 
-                Parallel.For(0, NColour, step =>
+                Parallel.For(0, kMax, step =>
                 {
-                    var colourIndex = (double)step / NColour;
+                    var colourIndex = (double)step / kMax;
                     var hue = Math.Pow(colourIndex, 0.30);
                     _colourTable[step] = ColorFromHsla(hue, 0.9, 0.6);
                 });

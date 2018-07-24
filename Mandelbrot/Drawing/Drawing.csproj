@@ -51,6 +51,8 @@
     <Compile Include="Canvas.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Keys.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="GraphicalOverlay.cs">
       <SubType>Component</SubType>
     </Compile>
