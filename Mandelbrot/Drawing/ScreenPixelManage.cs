@@ -16,14 +16,6 @@ namespace Drawing {
         private readonly double _convConstY2;
 
         /// <summary>
-        /// Simple class used to define a pixel's coordinates.
-        /// </summary>
-        public class PixelCoord {
-            public int XPixel;
-            public int YPixel;
-        }
-
-        /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="graphics"></param>

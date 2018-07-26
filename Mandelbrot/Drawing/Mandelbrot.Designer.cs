@@ -27,7 +27,6 @@
             this.generatePatternButton = new System.Windows.Forms.Button();
             this.xMinCheckBox = new System.Windows.Forms.TextBox();
             this.xMaxCheckBox = new System.Windows.Forms.TextBox();
-            this.zoomCheckbox = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
             this.iterationCountTextBox = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -43,25 +42,14 @@
             this.undoButton = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.stopwatchLabel = new System.Windows.Forms.Label();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.favouritesComboBox = new System.Windows.Forms.ComboBox();
-            this.openFavouritesButton = new System.Windows.Forms.Button();
-            this.addToFavouritesButton = new System.Windows.Forms.Button();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.fileNameLabel = new System.Windows.Forms.Label();
-            this.saveImageTextBox = new System.Windows.Forms.TextBox();
-            this.saveImageButton = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
-            this.groupBox3.SuspendLayout();
-            this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
             // generatePatternButton
             // 
             this.generatePatternButton.BackColor = System.Drawing.SystemColors.Control;
-            this.generatePatternButton.Location = new System.Drawing.Point(57, 274);
+            this.generatePatternButton.Location = new System.Drawing.Point(53, 207);
             this.generatePatternButton.Name = "generatePatternButton";
             this.generatePatternButton.Size = new System.Drawing.Size(81, 57);
             this.generatePatternButton.TabIndex = 0;
@@ -84,16 +72,6 @@
             this.xMaxCheckBox.Size = new System.Drawing.Size(56, 20);
             this.xMaxCheckBox.TabIndex = 14;
             this.xMaxCheckBox.Text = "1";
-            // 
-            // zoomCheckbox
-            // 
-            this.zoomCheckbox.AutoSize = true;
-            this.zoomCheckbox.Location = new System.Drawing.Point(17, 252);
-            this.zoomCheckbox.Name = "zoomCheckbox";
-            this.zoomCheckbox.Size = new System.Drawing.Size(53, 17);
-            this.zoomCheckbox.TabIndex = 15;
-            this.zoomCheckbox.Text = "Zoom";
-            this.zoomCheckbox.UseVisualStyleBackColor = true;
             // 
             // label2
             // 
@@ -173,7 +151,6 @@
             this.groupBox1.Controls.Add(this.undoButton);
             this.groupBox1.Controls.Add(this.generatePatternButton);
             this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.zoomCheckbox);
             this.groupBox1.Controls.Add(this.iterationCountTextBox);
             this.groupBox1.Controls.Add(this.xMaxCheckBox);
             this.groupBox1.Controls.Add(this.label3);
@@ -185,7 +162,7 @@
             this.groupBox1.Controls.Add(this.yMaxCheckBox);
             this.groupBox1.Location = new System.Drawing.Point(844, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(144, 363);
+            this.groupBox1.Size = new System.Drawing.Size(144, 301);
             this.groupBox1.TabIndex = 19;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Configuration";
@@ -205,12 +182,12 @@
             this.zoomTextBox.Name = "zoomTextBox";
             this.zoomTextBox.Size = new System.Drawing.Size(108, 20);
             this.zoomTextBox.TabIndex = 25;
-            this.zoomTextBox.Text = "7";
+            this.zoomTextBox.Text = "";
             // 
             // statusLabel
             // 
             this.statusLabel.AutoSize = true;
-            this.statusLabel.Location = new System.Drawing.Point(7, 340);
+            this.statusLabel.Location = new System.Drawing.Point(5, 274);
             this.statusLabel.Name = "statusLabel";
             this.statusLabel.Size = new System.Drawing.Size(40, 13);
             this.statusLabel.TabIndex = 24;
@@ -222,7 +199,7 @@
             this.undoButton.BackgroundImage = global::Drawing.Properties.Resources.undo_4_xxl;
             this.undoButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.undoButton.ImageKey = "(none)";
-            this.undoButton.Location = new System.Drawing.Point(10, 282);
+            this.undoButton.Location = new System.Drawing.Point(6, 215);
             this.undoButton.Name = "undoButton";
             this.undoButton.Size = new System.Drawing.Size(41, 41);
             this.undoButton.TabIndex = 23;
@@ -232,7 +209,7 @@
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.stopwatchLabel);
-            this.groupBox2.Location = new System.Drawing.Point(844, 514);
+            this.groupBox2.Location = new System.Drawing.Point(844, 310);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(144, 50);
             this.groupBox2.TabIndex = 20;
@@ -248,103 +225,11 @@
             this.stopwatchLabel.Size = new System.Drawing.Size(0, 20);
             this.stopwatchLabel.TabIndex = 0;
             // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.label7);
-            this.groupBox3.Controls.Add(this.favouritesComboBox);
-            this.groupBox3.Controls.Add(this.openFavouritesButton);
-            this.groupBox3.Controls.Add(this.addToFavouritesButton);
-            this.groupBox3.Location = new System.Drawing.Point(844, 365);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(144, 151);
-            this.groupBox3.TabIndex = 21;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Favourites";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(31, 66);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(87, 13);
-            this.label7.TabIndex = 3;
-            this.label7.Text = "List of Favourites";
-            // 
-            // favouritesComboBox
-            // 
-            this.favouritesComboBox.FormattingEnabled = true;
-            this.favouritesComboBox.Location = new System.Drawing.Point(13, 86);
-            this.favouritesComboBox.Name = "favouritesComboBox";
-            this.favouritesComboBox.Size = new System.Drawing.Size(121, 21);
-            this.favouritesComboBox.TabIndex = 2;
-            this.favouritesComboBox.DropDown += new System.EventHandler(this.FavouritesComboBox_DropDown);
-            // 
-            // openFavouritesButton
-            // 
-            this.openFavouritesButton.Location = new System.Drawing.Point(28, 116);
-            this.openFavouritesButton.Name = "openFavouritesButton";
-            this.openFavouritesButton.Size = new System.Drawing.Size(89, 23);
-            this.openFavouritesButton.TabIndex = 1;
-            this.openFavouritesButton.Text = "Open Favourite";
-            this.openFavouritesButton.UseVisualStyleBackColor = true;
-            this.openFavouritesButton.Click += new System.EventHandler(this.OpenFavourites_Click);
-            // 
-            // addToFavouritesButton
-            // 
-            this.addToFavouritesButton.Location = new System.Drawing.Point(10, 22);
-            this.addToFavouritesButton.Name = "addToFavouritesButton";
-            this.addToFavouritesButton.Size = new System.Drawing.Size(128, 33);
-            this.addToFavouritesButton.TabIndex = 0;
-            this.addToFavouritesButton.Text = "Add This to Favourites";
-            this.addToFavouritesButton.UseVisualStyleBackColor = true;
-            this.addToFavouritesButton.Click += new System.EventHandler(this.AddToFavourites_Click);
-            // 
-            // groupBox4
-            // 
-            this.groupBox4.Controls.Add(this.fileNameLabel);
-            this.groupBox4.Controls.Add(this.saveImageTextBox);
-            this.groupBox4.Controls.Add(this.saveImageButton);
-            this.groupBox4.Location = new System.Drawing.Point(844, 563);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(144, 86);
-            this.groupBox4.TabIndex = 22;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Export";
-            // 
-            // fileNameLabel
-            // 
-            this.fileNameLabel.AutoSize = true;
-            this.fileNameLabel.Location = new System.Drawing.Point(21, 18);
-            this.fileNameLabel.Name = "fileNameLabel";
-            this.fileNameLabel.Size = new System.Drawing.Size(52, 13);
-            this.fileNameLabel.TabIndex = 2;
-            this.fileNameLabel.Text = "File name";
-            // 
-            // saveImageTextBox
-            // 
-            this.saveImageTextBox.Location = new System.Drawing.Point(22, 35);
-            this.saveImageTextBox.Name = "saveImageTextBox";
-            this.saveImageTextBox.Size = new System.Drawing.Size(100, 20);
-            this.saveImageTextBox.TabIndex = 1;
-            this.saveImageTextBox.Text = "myImage";
-            // 
-            // saveImageButton
-            // 
-            this.saveImageButton.Location = new System.Drawing.Point(28, 59);
-            this.saveImageButton.Name = "saveImageButton";
-            this.saveImageButton.Size = new System.Drawing.Size(89, 23);
-            this.saveImageButton.TabIndex = 0;
-            this.saveImageButton.Text = "Save image";
-            this.saveImageButton.UseVisualStyleBackColor = true;
-            this.saveImageButton.Click += new System.EventHandler(this.SaveImageButton_Click);
-            // 
             // Mandelbrot
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(989, 652);
-            this.Controls.Add(this.groupBox4);
-            this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -353,16 +238,11 @@
             this.Text = "Mandelbrot";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Mandelbrot_Paint);
-            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MouseClickOnForm);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MouseUpOnForm);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
-            this.groupBox4.ResumeLayout(false);
-            this.groupBox4.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -372,7 +252,6 @@
         private System.Windows.Forms.Button generatePatternButton;
         private System.Windows.Forms.TextBox xMinCheckBox;
         private System.Windows.Forms.TextBox xMaxCheckBox;
-        private System.Windows.Forms.CheckBox zoomCheckbox;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox iterationCountTextBox;
         private System.Windows.Forms.Label label3;
@@ -384,19 +263,10 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label stopwatchLabel;
-        private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.Button addToFavouritesButton;
-        private System.Windows.Forms.Button openFavouritesButton;
-        private System.Windows.Forms.ComboBox favouritesComboBox;
-        private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button undoButton;
         private System.Windows.Forms.Label statusLabel;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox zoomTextBox;
-        private System.Windows.Forms.GroupBox groupBox4;
-        private System.Windows.Forms.Label fileNameLabel;
-        private System.Windows.Forms.TextBox saveImageTextBox;
-        private System.Windows.Forms.Button saveImageButton;
     }
 }
 
