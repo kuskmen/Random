@@ -51,6 +51,7 @@
     <Compile Include="Canvas.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="ColourTable.cs" />
     <Compile Include="Keys.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="GraphicalOverlay.cs">
@@ -71,6 +72,7 @@
     <Compile Include="Prompt.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScreenPixelManage.cs" />
+    <Compile Include="UndoInfo.cs" />
     <EmbeddedResource Include="Mandelbrot.resx">
       <DependentUpon>Mandelbrot.cs</DependentUpon>
     </EmbeddedResource>

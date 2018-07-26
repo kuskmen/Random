@@ -16,14 +16,6 @@ namespace Drawing {
         private readonly double _convConstY2;
 
         /// <summary>
-        /// Simple class used to define a pixel's coordinates.
-        /// </summary>
-        public class PixelCoord {
-            public int XPixel;
-            public int YPixel;
-        }
-
-        /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="graphics"></param>
@@ -38,11 +30,11 @@ namespace Drawing {
             //       this.xPixel = (int) ((graphics.VisibleClipBounds.Size.Width) / (screenTopRightCorner.x - screenBottomLeftCorner.x) * (cmplxPoint.x - screenBottomLeftCorner.x));
             //       this.yPixel = (int) (graphics.VisibleClipBounds.Size.Height - graphics.VisibleClipBounds.Size.Height / (screenTopRightCorner.y - screenBottomLeftCorner.y) * (cmplxPoint.y - screenBottomLeftCorner.y));
 
-            _convConstX1 = graphics.VisibleClipBounds.Size.Width / (screenTopRightCorner.X - screenBottomLeftCorner.X);
-            _convConstX2 = _convConstX1 * screenBottomLeftCorner.X;
+            _convConstX1 = graphics.VisibleClipBounds.Size.Width / (screenTopRightCorner.Real - screenBottomLeftCorner.Real);
+            _convConstX2 = _convConstX1 * screenBottomLeftCorner.Real;
 
-            _convConstY1 = graphics.VisibleClipBounds.Size.Height * (1.0 + screenBottomLeftCorner.Y / (screenTopRightCorner.Y - screenBottomLeftCorner.Y));
-            _convConstY2 = graphics.VisibleClipBounds.Size.Height / (screenTopRightCorner.Y - screenBottomLeftCorner.Y);
+            _convConstY1 = graphics.VisibleClipBounds.Size.Height * (1.0 + screenBottomLeftCorner.Imaginary / (screenTopRightCorner.Imaginary - screenBottomLeftCorner.Imaginary));
+            _convConstY2 = graphics.VisibleClipBounds.Size.Height / (screenTopRightCorner.Imaginary - screenBottomLeftCorner.Imaginary);
         }
 
         /// <summary>
@@ -72,8 +64,8 @@ namespace Drawing {
         /// <returns></returns>
         public ComplexPoint GetDeltaMathsCoord(ComplexPoint pixelCoord) {
             var result = new ComplexPoint(
-                   pixelCoord.X / _convConstX1,
-                   pixelCoord.Y / _convConstY2);
+                   pixelCoord.Real / _convConstX1,
+                   pixelCoord.Imaginary / _convConstY2);
             return result;
         }
 
@@ -86,8 +78,8 @@ namespace Drawing {
         /// <returns>Mathematical point corresponding to pixelCoord</returns>
         public ComplexPoint GetAbsoluteMathsCoord(ComplexPoint pixelCoord) {
             var result = new ComplexPoint(
-                   (_convConstX2 + pixelCoord.X) / _convConstX1,
-                   (_convConstY1 - pixelCoord.Y) / _convConstY2);
+                   (_convConstX2 + pixelCoord.Real) / _convConstX1,
+                   (_convConstY1 - pixelCoord.Imaginary) / _convConstY2);
             return result;
         }
     }
