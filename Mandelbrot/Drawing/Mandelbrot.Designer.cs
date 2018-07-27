@@ -1,4 +1,6 @@
-﻿namespace Drawing {
+﻿using System.Windows.Forms;
+
+namespace Drawing {
     partial class Mandelbrot {
         /// <summary>
         /// Required designer variable.
@@ -49,9 +51,9 @@
             // generatePatternButton
             // 
             this.generatePatternButton.BackColor = System.Drawing.SystemColors.Control;
-            this.generatePatternButton.Location = new System.Drawing.Point(53, 207);
+            this.generatePatternButton.Location = new System.Drawing.Point(356, 58);
             this.generatePatternButton.Name = "generatePatternButton";
-            this.generatePatternButton.Size = new System.Drawing.Size(81, 57);
+            this.generatePatternButton.Size = new System.Drawing.Size(127, 22);
             this.generatePatternButton.TabIndex = 0;
             this.generatePatternButton.Text = "Generate Pattern";
             this.generatePatternButton.UseVisualStyleBackColor = false;
@@ -59,7 +61,7 @@
             // 
             // xMinCheckBox
             // 
-            this.xMinCheckBox.Location = new System.Drawing.Point(13, 139);
+            this.xMinCheckBox.Location = new System.Drawing.Point(248, 32);
             this.xMinCheckBox.Name = "xMinCheckBox";
             this.xMinCheckBox.Size = new System.Drawing.Size(56, 20);
             this.xMinCheckBox.TabIndex = 13;
@@ -67,7 +69,7 @@
             // 
             // xMaxCheckBox
             // 
-            this.xMaxCheckBox.Location = new System.Drawing.Point(72, 139);
+            this.xMaxCheckBox.Location = new System.Drawing.Point(310, 32);
             this.xMaxCheckBox.Name = "xMaxCheckBox";
             this.xMaxCheckBox.Size = new System.Drawing.Size(56, 20);
             this.xMaxCheckBox.TabIndex = 14;
@@ -93,7 +95,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(16, 67);
+            this.label3.Location = new System.Drawing.Point(133, 16);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(29, 13);
             this.label3.TabIndex = 7;
@@ -102,7 +104,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(70, 67);
+            this.label4.Location = new System.Drawing.Point(193, 16);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(32, 13);
             this.label4.TabIndex = 8;
@@ -110,7 +112,7 @@
             // 
             // yMinCheckBox
             // 
-            this.yMinCheckBox.Location = new System.Drawing.Point(13, 90);
+            this.yMinCheckBox.Location = new System.Drawing.Point(124, 32);
             this.yMinCheckBox.Name = "yMinCheckBox";
             this.yMinCheckBox.Size = new System.Drawing.Size(56, 20);
             this.yMinCheckBox.TabIndex = 9;
@@ -118,7 +120,7 @@
             // 
             // yMaxCheckBox
             // 
-            this.yMaxCheckBox.Location = new System.Drawing.Point(72, 90);
+            this.yMaxCheckBox.Location = new System.Drawing.Point(186, 32);
             this.yMaxCheckBox.Name = "yMaxCheckBox";
             this.yMaxCheckBox.Size = new System.Drawing.Size(56, 20);
             this.yMaxCheckBox.TabIndex = 10;
@@ -127,7 +129,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(15, 122);
+            this.label5.Location = new System.Drawing.Point(253, 16);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(29, 13);
             this.label5.TabIndex = 11;
@@ -136,7 +138,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(73, 123);
+            this.label6.Location = new System.Drawing.Point(315, 16);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(32, 13);
             this.label6.TabIndex = 12;
@@ -145,6 +147,7 @@
             // groupBox1
             // 
             this.groupBox1.BackColor = System.Drawing.SystemColors.Control;
+            this.groupBox1.Controls.Add(this.groupBox2);
             this.groupBox1.Controls.Add(this.label8);
             this.groupBox1.Controls.Add(this.zoomTextBox);
             this.groupBox1.Controls.Add(this.statusLabel);
@@ -160,9 +163,9 @@
             this.groupBox1.Controls.Add(this.yMinCheckBox);
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.yMaxCheckBox);
-            this.groupBox1.Location = new System.Drawing.Point(844, 3);
+            this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(144, 301);
+            this.groupBox1.Size = new System.Drawing.Size(489, 108);
             this.groupBox1.TabIndex = 19;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Configuration";
@@ -170,7 +173,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(12, 166);
+            this.label8.Location = new System.Drawing.Point(392, 16);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(62, 13);
             this.label8.TabIndex = 26;
@@ -178,16 +181,15 @@
             // 
             // zoomTextBox
             // 
-            this.zoomTextBox.Location = new System.Drawing.Point(13, 181);
+            this.zoomTextBox.Location = new System.Drawing.Point(375, 32);
             this.zoomTextBox.Name = "zoomTextBox";
             this.zoomTextBox.Size = new System.Drawing.Size(108, 20);
             this.zoomTextBox.TabIndex = 25;
-            this.zoomTextBox.Text = "";
             // 
             // statusLabel
             // 
             this.statusLabel.AutoSize = true;
-            this.statusLabel.Location = new System.Drawing.Point(5, 274);
+            this.statusLabel.Location = new System.Drawing.Point(353, 83);
             this.statusLabel.Name = "statusLabel";
             this.statusLabel.Size = new System.Drawing.Size(40, 13);
             this.statusLabel.TabIndex = 24;
@@ -199,7 +201,7 @@
             this.undoButton.BackgroundImage = global::Drawing.Properties.Resources.undo_4_xxl;
             this.undoButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.undoButton.ImageKey = "(none)";
-            this.undoButton.Location = new System.Drawing.Point(6, 215);
+            this.undoButton.Location = new System.Drawing.Point(306, 58);
             this.undoButton.Name = "undoButton";
             this.undoButton.Size = new System.Drawing.Size(41, 41);
             this.undoButton.TabIndex = 23;
@@ -209,9 +211,9 @@
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.stopwatchLabel);
-            this.groupBox2.Location = new System.Drawing.Point(844, 310);
+            this.groupBox2.Location = new System.Drawing.Point(15, 58);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(144, 50);
+            this.groupBox2.Size = new System.Drawing.Size(149, 44);
             this.groupBox2.TabIndex = 20;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Timer";
@@ -230,12 +232,12 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(989, 652);
-            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Mandelbrot";
             this.Text = "Mandelbrot";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Mandelbrot_Paint);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MouseUpOnForm);
