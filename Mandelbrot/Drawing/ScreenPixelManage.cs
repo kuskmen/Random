@@ -15,12 +15,6 @@ namespace Drawing {
         private readonly double _convConstY1;
         private readonly double _convConstY2;
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="graphics"></param>
-        /// <param name="screenBottomLeftCorner"></param>
-        /// <param name="screenTopRightCorner"></param>
         public ScreenPixelManage(Graphics graphics, ComplexPoint screenBottomLeftCorner, ComplexPoint screenTopRightCorner) {
             
             // Transform from mathematical to pixel coordinates.

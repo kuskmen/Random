@@ -7,11 +7,11 @@ namespace Drawing
     /// <summary>
     /// Class used for colour lookup table.
     /// </summary>
-    public class ColourTable
+    public class ColorTable
     {
         private readonly Color[] _colourTable;
 
-        public ColourTable(int kMax)
+        public ColorTable(int kMax)
         {
             _colourTable = new Color[kMax];
 
