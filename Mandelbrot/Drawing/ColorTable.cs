@@ -28,10 +28,7 @@ namespace Drawing
         /// </summary>
         /// <param name="k"></param>
         /// <returns></returns>
-        public Color GetColour(int k)
-        {
-            return _colourTable[k];
-        }
+        public Color GetColour(int k) => _colourTable[k];
 
         /// <summary>
         /// Convert HSL colour value to Color object.

@@ -65,7 +65,7 @@ namespace Drawing
                 _cache.AddOrUpdate(Keys.ColorTable, colorTable);
             }
 
-            RenderImageParallel(iterations);
+            RenderImage(iterations);
         }
 
         private bool IsFormInvalid()
@@ -107,14 +107,9 @@ namespace Drawing
                 // Clear any existing graphics content.
                 _g.Clear(Color.White);
 
-                // Get screen boundary (lower left & upper right). This is
-                // used when calculating the pixel scaling factors.
-                var screenBottomLeft = new ComplexPoint(xMin, yMin);
-                var screenTopRight = new ComplexPoint(xMax, yMax);
-
                 // Create pixel manager. This sets up the scaling factors used when
                 // converting from mathemathical to screen (pixel units) using the
-                _myPixelManager = new ScreenPixelManage(_g, screenBottomLeft, screenTopRight);
+                _myPixelManager = new ScreenPixelManage(_g, new ComplexPoint(xMin, yMin), new ComplexPoint(xMax, yMax));
 
                 // The pixel step size defines the increment in screen pixels for each point
                 // at which the Mandelbrot calcualtion will be done.
@@ -123,8 +118,7 @@ namespace Drawing
 
                 // Start stopwatch - used to measure performance improvements
                 // (from improving the efficiency of the maths implementation).
-                var sw = new Stopwatch();
-                sw.Start();
+                var sw = Stopwatch.StartNew();
 
                 // Main loop, nested over Imaginary (outer) and Real (inner) values.
                 var yPix = _myBitmap.Height - 1;
@@ -139,7 +133,6 @@ namespace Drawing
                         // Initialise complex value Zk.
                         var zk = new ComplexPoint(0, 0);
 
-                        // TODO: Parallelization
                         var k = 0;
                         double modulusSquared;
                         do
@@ -239,7 +232,7 @@ namespace Drawing
                     {
                         if (xPix < _myBitmap.Width && yPix >= 0)
                         {
-                            _myBitmap.SetPixel(xPix, yPix, ((ColorTable) _cache[Keys.ColorTable]).GetColour(k));
+                            _myBitmap.SetPixel(xPix, yPix, Color.Black);
                         }
                     }
 
