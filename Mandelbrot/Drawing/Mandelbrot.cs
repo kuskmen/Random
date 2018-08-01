@@ -4,7 +4,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Drawing.Imaging;
 using System.Globalization;
+using System.IO;
+using System.Numerics;
 using System.Threading.Tasks;
 
 namespace Drawing
@@ -65,7 +68,7 @@ namespace Drawing
                 _cache.AddOrUpdate(Keys.ColorTable, colorTable);
             }
 
-            RenderImage(iterations);
+            RenderImageParallel(iterations);
         }
 
         private bool IsFormInvalid()
@@ -122,38 +125,45 @@ namespace Drawing
 
                 // Main loop, nested over Imaginary (outer) and Real (inner) values.
                 var yPix = _myBitmap.Height - 1;
-                for (var y = yMin; y < yMax; y += xyStep.Imaginary)
+                using (var writer = new StreamWriter(@"C:\projects\Random\Mandelbrot\Drawing\debug.txt"))
                 {
-                    var xPix = 0;
-                    for (var x = xMin; x < xMax; x += xyStep.Real)
+                    for (var y = yMin; y < yMax; y += xyStep.Imaginary)
                     {
-                        // Create complex point C = x + i*y.
-                        var c = new ComplexPoint(x, y);
-
-                        // Initialise complex value Zk.
-                        var zk = new ComplexPoint(0, 0);
-
-                        var k = 0;
-                        double modulusSquared;
-                        do
+                        var xPix = 0;
+                        for (var x = xMin; x < xMax; x += xyStep.Real)
                         {
-                            k++;
-                            zk = ComplexPoint.Square(zk);
-                            zk = ComplexPoint.Add(zk, c);
-                            modulusSquared = ComplexPoint.ModulusSquared(zk);
-                        } while (modulusSquared <= 4.0 && k < iterations);
+                            // Create complex point C = x + i*y.
+                            var c = new ComplexPoint(x, y);
 
-                        if (k < iterations)
-                        {
-                            if (xPix < _myBitmap.Width && yPix >= 0)
+                            // Initialise complex value Zk.
+                            var zk = new ComplexPoint(0, 0);
+
+                            var k = 0;
+                            double modulusSquared;
+                            do
                             {
-                                _myBitmap.SetPixel(xPix, yPix, ((ColorTable)_cache[Keys.ColorTable]).GetColour(k));
+                                k++;
+                                zk = ComplexPoint.Square(zk);
+                                zk = ComplexPoint.Add(zk, c);
+                                modulusSquared = ComplexPoint.ModulusSquared(zk);
+                            } while (modulusSquared <= 4.0 && k < iterations);
+
+                            if (k < iterations)
+                            {
+                                if (xPix < _myBitmap.Width && yPix >= 0)
+                                {
+                                    var color = ((ColorTable)_cache[Keys.ColorTable]).GetColour(k);
+                                    writer.Write("Setting color {0}, at xPix: {1} and yPix: {2}\n", color.Name, xPix,
+                                        yPix);
+                                    _myBitmap.SetPixel(xPix, yPix, color);
+                                }
                             }
+
+                            xPix++;
                         }
 
-                        xPix++;
+                        yPix--;
                     }
-                    yPix--;
                 }
                 // Finished rendering. Stop the stopwatch and show the elapsed time.
                 sw.Stop();
@@ -207,40 +217,47 @@ namespace Drawing
 
             // Main loop, nested over Imaginary (outer) and Real (inner) values.
             var yPix = _myBitmap.Height - 1;
+
             Parallel.ForEach(Iterate(yMin, yMax, xyStep.Imaginary), y =>
-            {
-                var xPix = 0;
-                for(var x = xMin; x < xMax; x += xyStep.Real)
-                {
-                    // Create complex point C = x + i*y.
-                    var c = new ComplexPoint(x, y);
+             {
+                 using (var writer = new StreamWriter(@"C:\projects\Random\Mandelbrot\Drawing\debug2.txt"))
+                 {
+                     var xPix = 0;
+                     for (var x = xMin; x < xMax; x += xyStep.Real)
+                     {
+                         // Create complex point C = x + i*y.
+                         var c = new ComplexPoint(x, y);
 
-                    // Initialise complex value Zk.
-                    var zk = new ComplexPoint(0, 0);
+                         // Initialise complex value Zk.
+                         var zk = new ComplexPoint(0, 0);
 
-                    var k = 0;
-                    double modulusSquared;
-                    do
-                    {
-                        k++;
-                        zk = ComplexPoint.Square(zk);
-                        zk = ComplexPoint.Add(zk, c);
-                        modulusSquared = ComplexPoint.ModulusSquared(zk);
-                    } while (modulusSquared <= 4.0 && k < iterations);
+                         var k = 0;
+                         double modulusSquared;
+                         do
+                         {
+                             k++;
+                             zk = ComplexPoint.Square(zk);
+                             zk = ComplexPoint.Add(zk, c);
+                             modulusSquared = ComplexPoint.ModulusSquared(zk);
+                         } while (modulusSquared <= 4.0 && k < iterations);
 
-                    if (k < iterations)
-                    {
-                        if (xPix < _myBitmap.Width && yPix >= 0)
-                        {
-                            _myBitmap.SetPixel(xPix, yPix, Color.Black);
-                        }
-                    }
+                         if (k < iterations)
+                         {
+                             if (xPix < _myBitmap.Width && yPix >= 0)
+                             {
+                                 var color = ((ColorTable)_cache[Keys.ColorTable]).GetColour(k);
+                                 writer.Write("Setting color {0}, at xPix: {1} and yPix: {2}\n", color.Name, xPix,
+                                        yPix);
+                                 _myBitmap.SetPixel(xPix, yPix, color);
+                             }
+                         }
 
-                    xPix++;
-                }
+                         xPix++;
+                     }
 
-                yPix--;
-            });
+                     yPix--;
+                 }
+             });
 
             Refresh();
             stopwatchLabel.Text = sw.Elapsed.TotalSeconds.ToString(CultureInfo.InvariantCulture);
