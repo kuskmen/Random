@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.Globalization;
+using System.Numerics;
 using System.Threading.Tasks;
 
 namespace Drawing
@@ -61,124 +61,17 @@ namespace Drawing
             // If colourTable is not yet created or kMax has changed, create colourTable.
             if (!_cache.TryGetValue(Keys.ColorTable, out var colorTable) || iterations != Convert.ToInt32(previousIterations))
             {
-                colorTable = new ColorTable(iterations);
+                colorTable = new ColorTable();
                 _cache.AddOrUpdate(Keys.ColorTable, colorTable);
             }
 
             RenderImage(iterations);
         }
 
-        private bool IsFormInvalid()
-        {
-            return iterationCountTextBox.Text.Equals("") ||
-                   yMinCheckBox.Text.Equals("") ||
-                   yMaxCheckBox.Text.Equals("") ||
-                   xMinCheckBox.Text.Equals("") ||
-                   xMaxCheckBox.Text.Equals("");
-        }
-
         private void RenderImage(int iterations)
         {
-            try
-            {
-                statusLabel.Text = "Status: Rendering";
-                if (IsFormInvalid())
-                {
-                    // Choose default parameters and warn the user if the settings are all empty.
-                    iterationCountTextBox.Text = "85";
-                    yMinCheckBox.Text = "-1";
-                    yMaxCheckBox.Text = "1";
-                    xMinCheckBox.Text = "-2";
-                    xMaxCheckBox.Text = "1";
-                    MessageBox.Show("Invalid fields detected. Using default values.");
-                    statusLabel.Text = "Status: Error";
-                    return;
-                }
+            undoButton.Show();
 
-                // Show zoom and undo controls.
-                undoButton.Show();
-
-                // Get the x, y range (mathematical coordinates) to plot.
-                var yMin = Convert.ToDouble(yMinCheckBox.Text);
-                var yMax = Convert.ToDouble(yMaxCheckBox.Text);
-                var xMin = Convert.ToDouble(xMinCheckBox.Text);
-                var xMax = Convert.ToDouble(xMaxCheckBox.Text);
-
-                // Clear any existing graphics content.
-                _g.Clear(Color.White);
-
-                // Create pixel manager. This sets up the scaling factors used when
-                // converting from mathemathical to screen (pixel units) using the
-                _myPixelManager = new ScreenPixelManage(_g, new ComplexPoint(xMin, yMin), new ComplexPoint(xMax, yMax));
-
-                // The pixel step size defines the increment in screen pixels for each point
-                // at which the Mandelbrot calcualtion will be done.
-                // This increment is converted to mathematical coordinates.
-                var xyStep = _myPixelManager.GetDeltaMathsCoord(new ComplexPoint(1, 1));
-
-                // Start stopwatch - used to measure performance improvements
-                // (from improving the efficiency of the maths implementation).
-                var sw = Stopwatch.StartNew();
-
-                // Main loop, nested over Imaginary (outer) and Real (inner) values.
-                var yPix = _myBitmap.Height - 1;
-                for (var y = yMin; y < yMax; y += xyStep.Imaginary)
-                {
-                    var xPix = 0;
-                    for (var x = xMin; x < xMax; x += xyStep.Real)
-                    {
-                        // Create complex point C = x + i*y.
-                        var c = new ComplexPoint(x, y);
-
-                        // Initialise complex value Zk.
-                        var zk = new ComplexPoint(0, 0);
-
-                        var k = 0;
-                        double modulusSquared;
-                        do
-                        {
-                            k++;
-                            zk = ComplexPoint.Square(zk);
-                            zk = ComplexPoint.Add(zk, c);
-                            modulusSquared = ComplexPoint.ModulusSquared(zk);
-                        } while (modulusSquared <= 4.0 && k < iterations);
-
-                        if (k < iterations)
-                        {
-                            if (xPix < _myBitmap.Width && yPix >= 0)
-                            {
-                                _myBitmap.SetPixel(xPix, yPix, ((ColorTable)_cache[Keys.ColorTable]).GetColour(k));
-                            }
-                        }
-
-                        xPix++;
-                    }
-                    yPix--;
-                }
-                // Finished rendering. Stop the stopwatch and show the elapsed time.
-                sw.Stop();
-                Refresh();
-                stopwatchLabel.Text = sw.Elapsed.TotalSeconds.ToString(CultureInfo.InvariantCulture);
-                statusLabel.Text = "Status: Render complete";
-
-                _undoHistory.Push(new UndoInfo
-                {
-                    IterationCount = iterationCountTextBox.Text,
-                    Ymin = yMinCheckBox.Text,
-                    Ymax = yMaxCheckBox.Text,
-                    Xmin = xMinCheckBox.Text,
-                    Xmax = xMaxCheckBox.Text
-                });
-            }
-            catch (Exception e2)
-            {
-                MessageBox.Show("Exception Trapped: " + e2.Message, "Error");
-                statusLabel.Text = "Status: Error";
-            }
-        }
-
-        private void RenderImageParallel(int iterations)
-        {
             // Get the x, y range (mathematical coordinates) to plot.
             var yMin = Convert.ToDouble(yMinCheckBox.Text);
             var yMax = Convert.ToDouble(yMaxCheckBox.Text);
@@ -188,51 +81,46 @@ namespace Drawing
             // Clear any existing graphics content.
             _g.Clear(Color.White);
 
-            // Get screen boundary (lower left & upper right). This is
-            // used when calculating the pixel scaling factors.
-            var screenBottomLeft = new ComplexPoint(xMin, yMin);
-            var screenTopRight = new ComplexPoint(xMax, yMax);
-
             // Create pixel manager. This sets up the scaling factors used when
             // converting from mathemathical to screen (pixel units) using the
-            _myPixelManager = new ScreenPixelManage(_g, screenBottomLeft, screenTopRight);
+            _myPixelManager = new ScreenPixelManage(_g, new Complex(xMin, yMin), new Complex(xMax, yMax));
 
             // The pixel step size defines the increment in screen pixels for each point
             // at which the Mandelbrot calcualtion will be done.
             // This increment is converted to mathematical coordinates.
-            var xyStep = _myPixelManager.GetDeltaMathsCoord(new ComplexPoint(1, 1));
+            var xyStep = _myPixelManager.GetDeltaMathsCoord(new Complex(1, 1));
 
-            var sw = new Stopwatch();
-            sw.Start();
+            var sw = Stopwatch.StartNew();
 
             // Main loop, nested over Imaginary (outer) and Real (inner) values.
             var yPix = _myBitmap.Height - 1;
-            Parallel.ForEach(Iterate(yMin, yMax, xyStep.Imaginary), y =>
+            for (var y = yMin; y < yMax; y += xyStep.Imaginary)
             {
                 var xPix = 0;
-                for(var x = xMin; x < xMax; x += xyStep.Real)
+                for (var x = xMin; x < xMax; x += xyStep.Real)
                 {
-                    // Create complex point C = x + i*y.
-                    var c = new ComplexPoint(x, y);
 
-                    // Initialise complex value Zk.
-                    var zk = new ComplexPoint(0, 0);
+                    var c = new Complex(x, y);
+                    var z = c;
 
                     var k = 0;
-                    double modulusSquared;
-                    do
+                    for (var iteration = 0; iteration < iterations; iteration++)
                     {
-                        k++;
-                        zk = ComplexPoint.Square(zk);
-                        zk = ComplexPoint.Add(zk, c);
-                        modulusSquared = ComplexPoint.ModulusSquared(zk);
-                    } while (modulusSquared <= 4.0 && k < iterations);
+                        if (z.Magnitude > 4.0)
+                        {
+                            k = iteration;
+                            break;
+                        }
+
+                        z = z * z + c;
+                    }
 
                     if (k < iterations)
                     {
                         if (xPix < _myBitmap.Width && yPix >= 0)
                         {
-                            _myBitmap.SetPixel(xPix, yPix, Color.Black);
+                            var color = ((ColorTable)_cache[Keys.ColorTable]).GetColour(k);
+                            _myBitmap.SetPixel(xPix, yPix, color);
                         }
                     }
 
@@ -240,8 +128,84 @@ namespace Drawing
                 }
 
                 yPix--;
-            });
+            }
 
+            sw.Stop();
+            Refresh();
+            stopwatchLabel.Text = sw.Elapsed.TotalSeconds.ToString(CultureInfo.InvariantCulture);
+            statusLabel.Text = "Status: Render complete";
+
+            _undoHistory.Push(new UndoInfo
+            {
+                IterationCount = iterationCountTextBox.Text,
+                Ymin = yMinCheckBox.Text,
+                Ymax = yMaxCheckBox.Text,
+                Xmin = xMinCheckBox.Text,
+                Xmax = xMaxCheckBox.Text
+            });
+        }
+
+        private void RenderImageParallel(int iterations)
+        {
+            undoButton.Show();
+
+            // Get the x, y range (mathematical coordinates) to plot.
+            var yMin = Convert.ToDouble(yMinCheckBox.Text);
+            var yMax = Convert.ToDouble(yMaxCheckBox.Text);
+            var xMin = Convert.ToDouble(xMinCheckBox.Text);
+            var xMax = Convert.ToDouble(xMaxCheckBox.Text);
+
+            // Clear any existing graphics content.
+            _g.Clear(Color.White);
+
+            // Create pixel manager. This sets up the scaling factors used when
+            // converting from mathemathical to screen (pixel units) using the
+            _myPixelManager = new ScreenPixelManage(_g, new Complex(xMin, yMin), new Complex(xMax, yMax));
+
+            // The pixel step size defines the increment in screen pixels for each point
+            // at which the Mandelbrot calcualtion will be done.
+            // This increment is converted to mathematical coordinates.
+            var xyStep = _myPixelManager.GetDeltaMathsCoord(new Complex(1, 1));
+
+            var sw = Stopwatch.StartNew();
+
+            // Main loop, nested over Imaginary (outer) and Real (inner) values.
+            var yPix = _myBitmap.Height - 1;
+
+            Parallel.ForEach(Iterate(yMin, yMax, xyStep.Imaginary), y =>
+             {
+                 var xPix = 0;
+                 for (var x = xMin; x < xMax; x += xyStep.Real)
+                 {
+                     // Create complex point C = x + i*y.
+                     var c = new Complex(x, y);
+
+                     // Initialise complex value Zk.
+                     var z = c;
+
+                     var k = 0;
+                     do
+                     {
+                         k++;
+                         z = z * z + c;
+                     } while (z.Magnitude <= 4.0 && k < iterations);
+
+                     if (k < iterations)
+                     {
+                         if (xPix < _myBitmap.Width && yPix >= 0)
+                         {
+                             var color = ((ColorTable)_cache[Keys.ColorTable]).GetColour(k);
+                             _myBitmap.SetPixel(xPix, yPix, color);
+                         }
+                     }
+
+                     xPix++;
+                 }
+
+                 yPix--;
+             });
+
+            sw.Stop();
             Refresh();
             stopwatchLabel.Text = sw.Elapsed.TotalSeconds.ToString(CultureInfo.InvariantCulture);
             statusLabel.Text = "Status: Render complete";
@@ -292,9 +256,9 @@ namespace Drawing
             var x = Convert.ToDouble(e.X);
             var y = Convert.ToDouble(e.Y);
 
-            var pixelCoord = new ComplexPoint((int)(x - 1005d / zoomScale / 4), (int)(y - 691d / zoomScale / 4));
+            var pixelCoord = new Complex((int)(x - 1005d / zoomScale / 4), (int)(y - 691d / zoomScale / 4));
             var zoomCoord1 = _myPixelManager.GetAbsoluteMathsCoord(pixelCoord);
-            var pixelCoord2 = new ComplexPoint((int)(x + 1005d / zoomScale / 4), (int)(y + 691d / zoomScale / 4));
+            var pixelCoord2 = new Complex((int)(x + 1005d / zoomScale / 4), (int)(y + 691d / zoomScale / 4));
             var zoomCoord2 = _myPixelManager.GetAbsoluteMathsCoord(pixelCoord2);
 
             // Swap to ensure that zoomCoord1 stores the lower-left
@@ -303,14 +267,14 @@ namespace Drawing
             if (zoomCoord2.Real < zoomCoord1.Real)
             {
                 var temp = zoomCoord1.Real;
-                zoomCoord1.Real = zoomCoord2.Real;
-                zoomCoord2.Real = temp;
+               // zoomCoord1.Real = zoomCoord2.Real;
+               // zoomCoord2.Real = temp;
             }
             if (zoomCoord2.Imaginary < zoomCoord1.Imaginary)
             {
                 var temp = zoomCoord1.Imaginary;
-                zoomCoord1.Imaginary = zoomCoord2.Imaginary;
-                zoomCoord2.Imaginary = temp;
+            //    zoomCoord1.Imaginary = zoomCoord2.Imaginary;
+            //    zoomCoord2.Imaginary = temp;
             }
 
             yMinCheckBox.Text = zoomCoord1.Imaginary.ToString(CultureInfo.InvariantCulture);
