@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.Globalization;
+using System.Numerics;
 using System.Threading.Tasks;
 
 namespace Drawing
@@ -60,11 +61,11 @@ namespace Drawing
             // If colourTable is not yet created or kMax has changed, create colourTable.
             if (!_cache.TryGetValue(Keys.ColorTable, out var colorTable) || iterations != Convert.ToInt32(previousIterations))
             {
-                colorTable = new ColorTable(iterations);
+                colorTable = new ColorTable();
                 _cache.AddOrUpdate(Keys.ColorTable, colorTable);
             }
 
-            RenderImageParallel(iterations);
+            RenderImage(iterations);
         }
 
         private void RenderImage(int iterations)
@@ -82,12 +83,12 @@ namespace Drawing
 
             // Create pixel manager. This sets up the scaling factors used when
             // converting from mathemathical to screen (pixel units) using the
-            _myPixelManager = new ScreenPixelManage(_g, new ComplexPoint(xMin, yMin), new ComplexPoint(xMax, yMax));
+            _myPixelManager = new ScreenPixelManage(_g, new Complex(xMin, yMin), new Complex(xMax, yMax));
 
             // The pixel step size defines the increment in screen pixels for each point
             // at which the Mandelbrot calcualtion will be done.
             // This increment is converted to mathematical coordinates.
-            var xyStep = _myPixelManager.GetDeltaMathsCoord(new ComplexPoint(1, 1));
+            var xyStep = _myPixelManager.GetDeltaMathsCoord(new Complex(1, 1));
 
             var sw = Stopwatch.StartNew();
 
@@ -98,21 +99,21 @@ namespace Drawing
                 var xPix = 0;
                 for (var x = xMin; x < xMax; x += xyStep.Real)
                 {
-                    // Create complex point C = x + i*y.
-                    var c = new ComplexPoint(x, y);
 
-                    // Initialise complex value Zk.
-                    var zk = new ComplexPoint(0, 0);
+                    var c = new Complex(x, y);
+                    var z = c;
 
                     var k = 0;
-                    double modulusSquared;
-                    do
+                    for (var iteration = 0; iteration < iterations; iteration++)
                     {
-                        k++;
-                        zk = ComplexPoint.Square(zk);
-                        zk = ComplexPoint.Add(zk, c);
-                        modulusSquared = ComplexPoint.ModulusSquared(zk);
-                    } while (modulusSquared <= 4.0 && k < iterations);
+                        if (z.Magnitude > 4.0)
+                        {
+                            k = iteration;
+                            break;
+                        }
+
+                        z = z * z + c;
+                    }
 
                     if (k < iterations)
                     {
@@ -159,12 +160,12 @@ namespace Drawing
 
             // Create pixel manager. This sets up the scaling factors used when
             // converting from mathemathical to screen (pixel units) using the
-            _myPixelManager = new ScreenPixelManage(_g, new ComplexPoint(xMin, yMin), new ComplexPoint(xMax, yMax));
+            _myPixelManager = new ScreenPixelManage(_g, new Complex(xMin, yMin), new Complex(xMax, yMax));
 
             // The pixel step size defines the increment in screen pixels for each point
             // at which the Mandelbrot calcualtion will be done.
             // This increment is converted to mathematical coordinates.
-            var xyStep = _myPixelManager.GetDeltaMathsCoord(new ComplexPoint(1, 1));
+            var xyStep = _myPixelManager.GetDeltaMathsCoord(new Complex(1, 1));
 
             var sw = Stopwatch.StartNew();
 
@@ -177,20 +178,17 @@ namespace Drawing
                  for (var x = xMin; x < xMax; x += xyStep.Real)
                  {
                      // Create complex point C = x + i*y.
-                     var c = new ComplexPoint(x, y);
+                     var c = new Complex(x, y);
 
                      // Initialise complex value Zk.
-                     var zk = new ComplexPoint(0, 0);
+                     var z = c;
 
                      var k = 0;
-                     double modulusSquared;
                      do
                      {
                          k++;
-                         zk = ComplexPoint.Square(zk);
-                         zk = ComplexPoint.Add(zk, c);
-                         modulusSquared = ComplexPoint.ModulusSquared(zk);
-                     } while (modulusSquared <= 4.0 && k < iterations);
+                         z = z * z + c;
+                     } while (z.Magnitude <= 4.0 && k < iterations);
 
                      if (k < iterations)
                      {
@@ -258,9 +256,9 @@ namespace Drawing
             var x = Convert.ToDouble(e.X);
             var y = Convert.ToDouble(e.Y);
 
-            var pixelCoord = new ComplexPoint((int)(x - 1005d / zoomScale / 4), (int)(y - 691d / zoomScale / 4));
+            var pixelCoord = new Complex((int)(x - 1005d / zoomScale / 4), (int)(y - 691d / zoomScale / 4));
             var zoomCoord1 = _myPixelManager.GetAbsoluteMathsCoord(pixelCoord);
-            var pixelCoord2 = new ComplexPoint((int)(x + 1005d / zoomScale / 4), (int)(y + 691d / zoomScale / 4));
+            var pixelCoord2 = new Complex((int)(x + 1005d / zoomScale / 4), (int)(y + 691d / zoomScale / 4));
             var zoomCoord2 = _myPixelManager.GetAbsoluteMathsCoord(pixelCoord2);
 
             // Swap to ensure that zoomCoord1 stores the lower-left
@@ -269,14 +267,14 @@ namespace Drawing
             if (zoomCoord2.Real < zoomCoord1.Real)
             {
                 var temp = zoomCoord1.Real;
-                zoomCoord1.Real = zoomCoord2.Real;
-                zoomCoord2.Real = temp;
+               // zoomCoord1.Real = zoomCoord2.Real;
+               // zoomCoord2.Real = temp;
             }
             if (zoomCoord2.Imaginary < zoomCoord1.Imaginary)
             {
                 var temp = zoomCoord1.Imaginary;
-                zoomCoord1.Imaginary = zoomCoord2.Imaginary;
-                zoomCoord2.Imaginary = temp;
+            //    zoomCoord1.Imaginary = zoomCoord2.Imaginary;
+            //    zoomCoord2.Imaginary = temp;
             }
 
             yMinCheckBox.Text = zoomCoord1.Imaginary.ToString(CultureInfo.InvariantCulture);

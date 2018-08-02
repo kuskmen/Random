@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Numerics;
 
 namespace Drawing {
 
@@ -15,7 +16,7 @@ namespace Drawing {
         private readonly double _convConstY1;
         private readonly double _convConstY2;
 
-        public ScreenPixelManage(Graphics graphics, ComplexPoint screenBottomLeftCorner, ComplexPoint screenTopRightCorner) {
+        public ScreenPixelManage(Graphics graphics, Complex screenBottomLeftCorner, Complex screenTopRightCorner) {
             
             // Transform from mathematical to pixel coordinates.
             //
@@ -56,8 +57,8 @@ namespace Drawing {
         /// </summary>
         /// <param name="pixelCoord">Screen coordinate</param>
         /// <returns></returns>
-        public ComplexPoint GetDeltaMathsCoord(ComplexPoint pixelCoord) {
-            var result = new ComplexPoint(
+        public Complex GetDeltaMathsCoord(Complex pixelCoord) {
+            var result = new Complex(
                    pixelCoord.Real / _convConstX1,
                    pixelCoord.Imaginary / _convConstY2);
             return result;
@@ -70,8 +71,8 @@ namespace Drawing {
         /// </summary>
         /// <param name="pixelCoord">Screen coordinate</param>
         /// <returns>Mathematical point corresponding to pixelCoord</returns>
-        public ComplexPoint GetAbsoluteMathsCoord(ComplexPoint pixelCoord) {
-            var result = new ComplexPoint(
+        public Complex GetAbsoluteMathsCoord(Complex pixelCoord) {
+            var result = new Complex(
                    (_convConstX2 + pixelCoord.Real) / _convConstX1,
                    (_convConstY1 - pixelCoord.Imaginary) / _convConstY2);
             return result;
