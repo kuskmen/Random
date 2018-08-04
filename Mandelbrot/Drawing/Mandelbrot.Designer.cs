@@ -27,23 +27,16 @@ namespace Drawing {
         private void InitializeComponent() {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Mandelbrot));
             this.generatePatternButton = new System.Windows.Forms.Button();
-            this.xMinCheckBox = new System.Windows.Forms.TextBox();
-            this.xMaxCheckBox = new System.Windows.Forms.TextBox();
+            this.mandelbrotPb = new System.Windows.Forms.PictureBox();
             this.label2 = new System.Windows.Forms.Label();
             this.iterationCountTextBox = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.yMinCheckBox = new System.Windows.Forms.TextBox();
-            this.yMaxCheckBox = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label8 = new System.Windows.Forms.Label();
-            this.zoomTextBox = new System.Windows.Forms.TextBox();
-            this.statusLabel = new System.Windows.Forms.Label();
-            this.undoButton = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.stopwatchLabel = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.zoomTextBox = new System.Windows.Forms.TextBox();
+            this.undoButton = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.mandelbrotPb)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -51,7 +44,7 @@ namespace Drawing {
             // generatePatternButton
             // 
             this.generatePatternButton.BackColor = System.Drawing.SystemColors.Control;
-            this.generatePatternButton.Location = new System.Drawing.Point(356, 58);
+            this.generatePatternButton.Location = new System.Drawing.Point(238, 30);
             this.generatePatternButton.Name = "generatePatternButton";
             this.generatePatternButton.Size = new System.Drawing.Size(127, 22);
             this.generatePatternButton.TabIndex = 0;
@@ -59,21 +52,15 @@ namespace Drawing {
             this.generatePatternButton.UseVisualStyleBackColor = false;
             this.generatePatternButton.Click += new System.EventHandler(this.RenderMandelbrot);
             // 
-            // xMinCheckBox
+            // mandelbrotPb
             // 
-            this.xMinCheckBox.Location = new System.Drawing.Point(248, 32);
-            this.xMinCheckBox.Name = "xMinCheckBox";
-            this.xMinCheckBox.Size = new System.Drawing.Size(56, 20);
-            this.xMinCheckBox.TabIndex = 13;
-            this.xMinCheckBox.Text = "-2";
-            // 
-            // xMaxCheckBox
-            // 
-            this.xMaxCheckBox.Location = new System.Drawing.Point(310, 32);
-            this.xMaxCheckBox.Name = "xMaxCheckBox";
-            this.xMaxCheckBox.Size = new System.Drawing.Size(56, 20);
-            this.xMaxCheckBox.TabIndex = 14;
-            this.xMaxCheckBox.Text = "1";
+            this.mandelbrotPb.Location = new System.Drawing.Point(18, 12);
+            this.mandelbrotPb.Dock = DockStyle.Fill;
+            this.mandelbrotPb.Name = "mandelbrotPb";
+            this.mandelbrotPb.Size = new System.Drawing.Size(959, 628);
+            this.mandelbrotPb.TabIndex = 20;
+            this.mandelbrotPb.TabStop = false;
+            this.mandelbrotPb.MouseClick += this.Mandelbrot_MouseClick;
             // 
             // label2
             // 
@@ -92,77 +79,16 @@ namespace Drawing {
             this.iterationCountTextBox.TabIndex = 5;
             this.iterationCountTextBox.Text = "85";
             // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(133, 16);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(29, 13);
-            this.label3.TabIndex = 7;
-            this.label3.Text = "yMin";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(193, 16);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(32, 13);
-            this.label4.TabIndex = 8;
-            this.label4.Text = "yMax";
-            // 
-            // yMinCheckBox
-            // 
-            this.yMinCheckBox.Location = new System.Drawing.Point(124, 32);
-            this.yMinCheckBox.Name = "yMinCheckBox";
-            this.yMinCheckBox.Size = new System.Drawing.Size(56, 20);
-            this.yMinCheckBox.TabIndex = 9;
-            this.yMinCheckBox.Text = "-1";
-            // 
-            // yMaxCheckBox
-            // 
-            this.yMaxCheckBox.Location = new System.Drawing.Point(186, 32);
-            this.yMaxCheckBox.Name = "yMaxCheckBox";
-            this.yMaxCheckBox.Size = new System.Drawing.Size(56, 20);
-            this.yMaxCheckBox.TabIndex = 10;
-            this.yMaxCheckBox.Text = "1";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(253, 16);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(29, 13);
-            this.label5.TabIndex = 11;
-            this.label5.Text = "xMin";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(315, 16);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(32, 13);
-            this.label6.TabIndex = 12;
-            this.label6.Text = "xMax";
-            // 
             // groupBox1
             // 
             this.groupBox1.BackColor = System.Drawing.SystemColors.Control;
             this.groupBox1.Controls.Add(this.groupBox2);
             this.groupBox1.Controls.Add(this.label8);
             this.groupBox1.Controls.Add(this.zoomTextBox);
-            this.groupBox1.Controls.Add(this.statusLabel);
             this.groupBox1.Controls.Add(this.undoButton);
             this.groupBox1.Controls.Add(this.generatePatternButton);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.iterationCountTextBox);
-            this.groupBox1.Controls.Add(this.xMaxCheckBox);
-            this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Controls.Add(this.xMinCheckBox);
-            this.groupBox1.Controls.Add(this.label4);
-            this.groupBox1.Controls.Add(this.label6);
-            this.groupBox1.Controls.Add(this.yMinCheckBox);
-            this.groupBox1.Controls.Add(this.label5);
-            this.groupBox1.Controls.Add(this.yMaxCheckBox);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(489, 108);
@@ -170,48 +96,10 @@ namespace Drawing {
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Configuration";
             // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(392, 16);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(62, 13);
-            this.label8.TabIndex = 26;
-            this.label8.Text = "Zoom scale";
-            // 
-            // zoomTextBox
-            // 
-            this.zoomTextBox.Location = new System.Drawing.Point(375, 32);
-            this.zoomTextBox.Name = "zoomTextBox";
-            this.zoomTextBox.Size = new System.Drawing.Size(108, 20);
-            this.zoomTextBox.TabIndex = 25;
-            // 
-            // statusLabel
-            // 
-            this.statusLabel.AutoSize = true;
-            this.statusLabel.Location = new System.Drawing.Point(353, 83);
-            this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(40, 13);
-            this.statusLabel.TabIndex = 24;
-            this.statusLabel.Text = "Status:";
-            // 
-            // undoButton
-            // 
-            this.undoButton.BackColor = System.Drawing.Color.Transparent;
-            this.undoButton.BackgroundImage = global::Drawing.Properties.Resources.undo_4_xxl;
-            this.undoButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.undoButton.ImageKey = "(none)";
-            this.undoButton.Location = new System.Drawing.Point(306, 58);
-            this.undoButton.Name = "undoButton";
-            this.undoButton.Size = new System.Drawing.Size(41, 41);
-            this.undoButton.TabIndex = 23;
-            this.undoButton.UseVisualStyleBackColor = false;
-            this.undoButton.Click += new System.EventHandler(this.Undo_Click);
-            // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.stopwatchLabel);
-            this.groupBox2.Location = new System.Drawing.Point(15, 58);
+            this.groupBox2.Location = new System.Drawing.Point(15, 55);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(149, 44);
             this.groupBox2.TabIndex = 20;
@@ -227,20 +115,49 @@ namespace Drawing {
             this.stopwatchLabel.Size = new System.Drawing.Size(0, 20);
             this.stopwatchLabel.TabIndex = 0;
             // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(142, 16);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(62, 13);
+            this.label8.TabIndex = 26;
+            this.label8.Text = "Zoom scale";
+            // 
+            // zoomTextBox
+            // 
+            this.zoomTextBox.Location = new System.Drawing.Point(124, 32);
+            this.zoomTextBox.Name = "zoomTextBox";
+            this.zoomTextBox.Size = new System.Drawing.Size(108, 20);
+            this.zoomTextBox.TabIndex = 25;
+            // 
+            // undoButton
+            // 
+            this.undoButton.BackColor = System.Drawing.Color.Transparent;
+            this.undoButton.BackgroundImage = global::Drawing.Properties.Resources.undo_4_xxl;
+            this.undoButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.undoButton.ImageKey = "(none)";
+            this.undoButton.Location = new System.Drawing.Point(170, 61);
+            this.undoButton.Name = "undoButton";
+            this.undoButton.Size = new System.Drawing.Size(44, 38);
+            this.undoButton.TabIndex = 23;
+            this.undoButton.UseVisualStyleBackColor = false;
+            this.undoButton.Click += new System.EventHandler(this.Undo_Click);
+            // 
             // Mandelbrot
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(989, 652);
             this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.mandelbrotPb);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Mandelbrot";
             this.Text = "Mandelbrot";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.Form1_Load);
-            this.Paint += new System.Windows.Forms.PaintEventHandler(this.Mandelbrot_Paint);
-            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MouseUpOnForm);
+            ((System.ComponentModel.ISupportInitialize)(this.mandelbrotPb)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
@@ -252,23 +169,15 @@ namespace Drawing {
         #endregion
 
         private System.Windows.Forms.Button generatePatternButton;
-        private System.Windows.Forms.TextBox xMinCheckBox;
-        private System.Windows.Forms.TextBox xMaxCheckBox;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox iterationCountTextBox;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox yMinCheckBox;
-        private System.Windows.Forms.TextBox yMaxCheckBox;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label6;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label stopwatchLabel;
         private System.Windows.Forms.Button undoButton;
-        private System.Windows.Forms.Label statusLabel;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox zoomTextBox;
+        private System.Windows.Forms.PictureBox mandelbrotPb;
     }
 }
 
