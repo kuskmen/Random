@@ -18,7 +18,7 @@ namespace Drawing
         {
             var paletteColors = new Color[256];
             paletteColors[0] = Color.Black;
-            for (short i = 1; i < 256; i++) paletteColors[i] = Color.FromArgb(0, i * 5 % 256, i * 23 % 256); // change this at will for different colorings
+            for (short i = 1; i < 256; i++) paletteColors[i] = Color.FromArgb(0, i % 256, i * 3 % 256); // change this at will for different colorings
             return paletteColors;
         }
 
@@ -35,7 +35,7 @@ namespace Drawing
         {
             // In order to use the Bitmap ctor that accepts a stride, the stride must be divisible by four.
             // We're using imageWidth as the stride, so shift it to be divisible by 4 as necessary.
-            if (imageWidth % 4 != 0) imageWidth = (imageWidth / 4) * 4;
+            if (imageWidth % 4 != 0) imageWidth = (imageWidth << 4) * 4;
 
             // Based on the fractal bounds, determine its upper left coordinate
             var left = position.CenterX - (position.Width / 2);
@@ -62,6 +62,13 @@ namespace Drawing
                     {
                         var c = new Complex(col * colToXTranslation + left, initialY);
                         var z = c;
+
+                        if (IsInCardioid(z))
+                        {
+                            *currentPixel = 0;
+                            continue;
+                        }
+
                         for (var iteration = 0; iteration < iterations; iteration++)
                         {
                             if (z.Magnitude > 4)
@@ -86,6 +93,13 @@ namespace Drawing
                     return bitmap;
                 }
             }
+        }
+
+        // https://en.wikipedia.org/wiki/Mandelbrot_set#Optimizations
+        private static bool IsInCardioid(Complex complex)
+        {
+            var q = Math.Pow(complex.Real - .25, 2) + complex.Imaginary * complex.Imaginary;
+            return q * (q + (complex.Real - .25)) < .25 * complex.Imaginary * complex.Imaginary;
         }
     }
 }

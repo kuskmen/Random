@@ -1,27 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Windows.Forms;
-using System.Diagnostics;
-using System.Globalization;
-using System.Threading;
-
-namespace Drawing
+﻿namespace Drawing
 {
-    /// <summary>
-    /// Mandelbrot class extends Form, used to render the Mandelbrot set,
-    /// with user controls allowing selection of the region to plot,
-    /// resolution, maximum iteration count etc.
-    /// </summary>
-    public partial class Mandelbrot : Form
+    using System;
+    using System.Drawing;
+    using System.Windows.Forms;
+    using System.Diagnostics;
+    using System.Globalization;
+    using System.Threading;
+
+   public partial class Mandelbrot : Form
     {
         public Mandelbrot()
         {
             InitializeComponent();
         }
 
-        private readonly Stack<UndoInfo> _undoHistory = new Stack<UndoInfo>();
-        private readonly MandelbrotCoordinates _mandelbrotCoordinates = MandelbrotCoordinates.Default;
+        private MandelbrotCoordinates _mandelbrotCoordinates = MandelbrotCoordinates.Default;
 
         /// <summary>
         /// Load the main form for this application.
@@ -30,8 +23,7 @@ namespace Drawing
         /// <param name="e"></param>
         private void Form1_Load(object sender, EventArgs e)
         {
-            // Hide controls that are not relevant until the first rendering has completed.
-            undoButton.Hide();
+            RenderMandelbrot(int.Parse(iterationCountTextBox.Text));
         }
 
         /// <summary>
@@ -72,36 +64,27 @@ namespace Drawing
             stopwatchLabel.Text = stopWatch.Elapsed.TotalSeconds.ToString(CultureInfo.InvariantCulture);
         }
 
-       /// <summary>
-        /// When the undo button is clicked, the last settings are read from
-        /// the last undo text file, and the text boxes are set to these settings.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Undo_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                _undoHistory.Pop();
-                var undoInfo = _undoHistory.Pop();
-
-                iterationCountTextBox.Text = undoInfo.IterationCount;
-
-                RenderMandelbrot(Convert.ToInt32(iterationCountTextBox.Text));
-            }
-            catch (Exception e3)
-            {
-                MessageBox.Show("Unable to Undo: " + e3.Message, "Error");
-            }
-        }
-
         private void Mandelbrot_MouseClick(object sender, MouseEventArgs args)
         {
-            if ((args.Button & MouseButtons.Left) != 0)
-            {
-                // TODO: Zoom
+            if((args.Button & MouseButtons.Left) != 0) {
+                Zoom(.5, args);
+                return;
             }
-            // TODO: Undo
+
+            Zoom(2d, args);
+        }
+
+        private void Zoom(double factor, MouseEventArgs e)
+        {
+            // Center the image on the selected location
+            _mandelbrotCoordinates.CenterX += ((e.X - (mandelbrotPb.Width / 2.0)) / mandelbrotPb.Width) * _mandelbrotCoordinates.Width;
+            _mandelbrotCoordinates.CenterY += ((e.Y - (mandelbrotPb.Height / 2.0)) / mandelbrotPb.Height) * _mandelbrotCoordinates.Height;
+
+            _mandelbrotCoordinates.Width *= factor;
+            _mandelbrotCoordinates.Height *= factor;
+
+            // Update the image
+            RenderMandelbrot(int.Parse(iterationCountTextBox.Text));
         }
 
         public struct MandelbrotCoordinates
@@ -114,8 +97,11 @@ namespace Drawing
                     CenterX = -.75,
                     CenterY = .006
                 };
-            public double Width, Height;
-            public double CenterX, CenterY;
+
+            public double Width { get; set; }
+            public double Height { get; set; }
+            public double CenterX { get; set; }
+            public double CenterY { get; set; }
         }
     }
 }

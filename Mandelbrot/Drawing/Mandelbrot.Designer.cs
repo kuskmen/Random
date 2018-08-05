@@ -1,6 +1,7 @@
 ﻿using System.Windows.Forms;
 
-namespace Drawing {
+namespace Drawing
+{
     partial class Mandelbrot {
         /// <summary>
         /// Required designer variable.
@@ -33,9 +34,6 @@ namespace Drawing {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.stopwatchLabel = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.zoomTextBox = new System.Windows.Forms.TextBox();
-            this.undoButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.mandelbrotPb)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -44,7 +42,7 @@ namespace Drawing {
             // generatePatternButton
             // 
             this.generatePatternButton.BackColor = System.Drawing.SystemColors.Control;
-            this.generatePatternButton.Location = new System.Drawing.Point(238, 30);
+            this.generatePatternButton.Location = new System.Drawing.Point(124, 30);
             this.generatePatternButton.Name = "generatePatternButton";
             this.generatePatternButton.Size = new System.Drawing.Size(127, 22);
             this.generatePatternButton.TabIndex = 0;
@@ -54,10 +52,10 @@ namespace Drawing {
             // 
             // mandelbrotPb
             // 
-            this.mandelbrotPb.Location = new System.Drawing.Point(18, 12);
-            this.mandelbrotPb.Dock = DockStyle.Fill;
+            this.mandelbrotPb.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mandelbrotPb.Location = new System.Drawing.Point(0, 0);
             this.mandelbrotPb.Name = "mandelbrotPb";
-            this.mandelbrotPb.Size = new System.Drawing.Size(959, 628);
+            this.mandelbrotPb.Size = new System.Drawing.Size(989, 652);
             this.mandelbrotPb.TabIndex = 20;
             this.mandelbrotPb.TabStop = false;
             this.mandelbrotPb.MouseClick += this.Mandelbrot_MouseClick;
@@ -82,24 +80,22 @@ namespace Drawing {
             // groupBox1
             // 
             this.groupBox1.BackColor = System.Drawing.SystemColors.Control;
-            this.groupBox1.Controls.Add(this.groupBox2);
-            this.groupBox1.Controls.Add(this.label8);
-            this.groupBox1.Controls.Add(this.zoomTextBox);
-            this.groupBox1.Controls.Add(this.undoButton);
             this.groupBox1.Controls.Add(this.generatePatternButton);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.iterationCountTextBox);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(489, 108);
+            this.groupBox1.Size = new System.Drawing.Size(258, 60);
             this.groupBox1.TabIndex = 19;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Configuration";
+            this.groupBox1.Text = "Arguments";
+            this.groupBox1.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.stopwatchLabel);
-            this.groupBox2.Location = new System.Drawing.Point(15, 55);
+            this.groupBox2.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            this.groupBox2.Location = new System.Drawing.Point(828, 596);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(149, 44);
             this.groupBox2.TabIndex = 20;
@@ -115,40 +111,12 @@ namespace Drawing {
             this.stopwatchLabel.Size = new System.Drawing.Size(0, 20);
             this.stopwatchLabel.TabIndex = 0;
             // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(142, 16);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(62, 13);
-            this.label8.TabIndex = 26;
-            this.label8.Text = "Zoom scale";
-            // 
-            // zoomTextBox
-            // 
-            this.zoomTextBox.Location = new System.Drawing.Point(124, 32);
-            this.zoomTextBox.Name = "zoomTextBox";
-            this.zoomTextBox.Size = new System.Drawing.Size(108, 20);
-            this.zoomTextBox.TabIndex = 25;
-            // 
-            // undoButton
-            // 
-            this.undoButton.BackColor = System.Drawing.Color.Transparent;
-            this.undoButton.BackgroundImage = global::Drawing.Properties.Resources.undo_4_xxl;
-            this.undoButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.undoButton.ImageKey = "(none)";
-            this.undoButton.Location = new System.Drawing.Point(170, 61);
-            this.undoButton.Name = "undoButton";
-            this.undoButton.Size = new System.Drawing.Size(44, 38);
-            this.undoButton.TabIndex = 23;
-            this.undoButton.UseVisualStyleBackColor = false;
-            this.undoButton.Click += new System.EventHandler(this.Undo_Click);
-            // 
             // Mandelbrot
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(989, 652);
+            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.mandelbrotPb);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -174,9 +142,6 @@ namespace Drawing {
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label stopwatchLabel;
-        private System.Windows.Forms.Button undoButton;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.TextBox zoomTextBox;
         private System.Windows.Forms.PictureBox mandelbrotPb;
     }
 }

@@ -61,7 +61,6 @@
     <Compile Include="GraphicalOverlay.designer.cs">
       <DependentUpon>GraphicalOverlay.cs</DependentUpon>
     </Compile>
-    <Compile Include="LockedBitmap.cs" />
     <Compile Include="Mandelbrot.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -71,7 +70,6 @@
     <Compile Include="MandelbrotRenderer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UndoInfo.cs" />
     <EmbeddedResource Include="Mandelbrot.resx">
       <DependentUpon>Mandelbrot.cs</DependentUpon>
     </EmbeddedResource>
