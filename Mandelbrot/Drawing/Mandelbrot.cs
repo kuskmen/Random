@@ -23,7 +23,7 @@
         /// <param name="e"></param>
         private void Form1_Load(object sender, EventArgs e)
         {
-            RenderMandelbrot(int.Parse(iterationCountTextBox.Text));
+            RenderMandelbrot(int.Parse(iterationsTb.Text));
         }
 
         /// <summary>
@@ -34,19 +34,16 @@
         /// <param name="e"></param>
         private void RenderMandelbrot(object sender, EventArgs e)
         {
-            RenderMandelbrot(int.Parse(iterationCountTextBox.Text));
+            RenderMandelbrot(int.Parse(iterationsTb.Text));
         }
 
         private void RenderMandelbrot(int iterations)
         {
-            // Get the current size of the picture box
-            var renderSize = mandelbrotPb.Size;
-
             // For diagnostic reasons, time how long the rendering takes
             var stopWatch = Stopwatch.StartNew();
 
             // Render the fractal
-            var bmp = MandelbrotRenderer.Create(_mandelbrotCoordinates, renderSize.Width, renderSize.Height, CancellationToken.None, iterations);
+            var bmp = MandelbrotRenderer.Create(_mandelbrotCoordinates, mandelbrotPb.Size, iterations, int.Parse(parallelismTb.Text));
             if (bmp != null)
             {
                 stopWatch.Stop();
@@ -77,14 +74,14 @@
         private void Zoom(double factor, MouseEventArgs e)
         {
             // Center the image on the selected location
-            _mandelbrotCoordinates.CenterX += ((e.X - (mandelbrotPb.Width / 2.0)) / mandelbrotPb.Width) * _mandelbrotCoordinates.Width;
-            _mandelbrotCoordinates.CenterY += ((e.Y - (mandelbrotPb.Height / 2.0)) / mandelbrotPb.Height) * _mandelbrotCoordinates.Height;
+            _mandelbrotCoordinates.CenterX += (e.X - mandelbrotPb.Width / 2.0) / mandelbrotPb.Width * _mandelbrotCoordinates.Width;
+            _mandelbrotCoordinates.CenterY += (e.Y - mandelbrotPb.Height / 2.0) / mandelbrotPb.Height * _mandelbrotCoordinates.Height;
 
             _mandelbrotCoordinates.Width *= factor;
             _mandelbrotCoordinates.Height *= factor;
 
             // Update the image
-            RenderMandelbrot(int.Parse(iterationCountTextBox.Text));
+            RenderMandelbrot(int.Parse(iterationsTb.Text));
         }
 
         public struct MandelbrotCoordinates
@@ -92,7 +89,7 @@
             public static MandelbrotCoordinates Default =>
                 new MandelbrotCoordinates
                 {
-                    Width = 2.9,
+                    Width = 4.5,
                     Height = 2.27,
                     CenterX = -.75,
                     CenterY = .006
