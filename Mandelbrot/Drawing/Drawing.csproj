@@ -51,16 +51,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Canvas.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Extensions.cs" />
-    <Compile Include="GraphicalOverlay.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="GraphicalOverlay.designer.cs">
-      <DependentUpon>GraphicalOverlay.cs</DependentUpon>
-    </Compile>
     <Compile Include="Mandelbrot.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -95,12 +85,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\transparent.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\undo-4-xxl.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

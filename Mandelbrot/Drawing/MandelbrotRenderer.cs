@@ -1,16 +1,15 @@
-﻿using System;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Numerics;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace Drawing
+﻿namespace Drawing
 {
+    using System;
+    using System.Drawing;
+    using System.Drawing.Imaging;
+    using System.Numerics;
+    using System.Threading;
+    using System.Threading.Tasks;
+    
     public class MandelbrotRenderer
     {
-        /// <summary>The 256 color palette to use for all fractals.</summary>
-        private static readonly Color[] _paletteColors = CreatePaletteColors();
+        private static readonly Color[] PaletteColors = CreatePaletteColors();
 
         /// <summary>Create the color palette to be used for all fractals.</summary>
         /// <returns>A 256-color array that can be stored into an 8bpp Bitmap's ColorPalette.</returns>
@@ -27,7 +26,7 @@ namespace Drawing
         private static void UpdatePalette(Bitmap bmp)
         {
             var p = bmp.Palette;
-            Array.Copy(_paletteColors, p.Entries, _paletteColors.Length);
+            Array.Copy(PaletteColors, p.Entries, PaletteColors.Length);
             bmp.Palette = p; // The Bitmap will only update when the Palette property's setter is used
         }
 
@@ -98,7 +97,7 @@ namespace Drawing
         // https://en.wikipedia.org/wiki/Mandelbrot_set#Optimizations
         private static bool IsInCardioid(Complex complex)
         {
-            var q = Math.Pow(complex.Real - .25, 2) + complex.Imaginary * complex.Imaginary;
+            var q = (complex.Real - .25) * (complex.Real - .25) + complex.Imaginary * complex.Imaginary;
             return q * (q + (complex.Real - .25)) < .25 * complex.Imaginary * complex.Imaginary;
         }
     }
