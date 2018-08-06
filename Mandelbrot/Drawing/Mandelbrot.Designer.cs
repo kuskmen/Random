@@ -1,12 +1,14 @@
-﻿using System.Windows.Forms;
-
-namespace Drawing
+﻿namespace Drawing
 {
+    using System.Windows.Forms;
+    using System.ComponentModel;
+    using System.Drawing;
+
     partial class Mandelbrot {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -26,123 +28,144 @@ namespace Drawing
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Mandelbrot));
-            this.generatePatternButton = new System.Windows.Forms.Button();
-            this.mandelbrotPb = new System.Windows.Forms.PictureBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.iterationCountTextBox = new System.Windows.Forms.TextBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.stopwatchLabel = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.mandelbrotPb)).BeginInit();
-            this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
+            var resources = new ComponentResourceManager(typeof(Mandelbrot));
+            this.RenderButton = new Button();
+            this.mandelbrotPb = new PictureBox();
+            this.iterationsLb = new Label();
+            this.iterationsTb = new TextBox();
+            this.argumentsGb = new GroupBox();
+            this.timerGb = new GroupBox();
+            this.stopwatchLabel = new Label();
+            this.parallelismTb = new TextBox();
+            this.parallelismLb = new Label();
+            ((ISupportInitialize)(this.mandelbrotPb)).BeginInit();
+            this.argumentsGb.SuspendLayout();
+            this.timerGb.SuspendLayout();
             this.SuspendLayout();
             // 
-            // generatePatternButton
+            // RenderButton
             // 
-            this.generatePatternButton.BackColor = System.Drawing.SystemColors.Control;
-            this.generatePatternButton.Location = new System.Drawing.Point(124, 30);
-            this.generatePatternButton.Name = "generatePatternButton";
-            this.generatePatternButton.Size = new System.Drawing.Size(127, 22);
-            this.generatePatternButton.TabIndex = 0;
-            this.generatePatternButton.Text = "Generate Pattern";
-            this.generatePatternButton.UseVisualStyleBackColor = false;
-            this.generatePatternButton.Click += new System.EventHandler(this.RenderMandelbrot);
+            this.RenderButton.BackColor = SystemColors.Control;
+            this.RenderButton.Location = new Point(196, 30);
+            this.RenderButton.Name = "RenderButton";
+            this.RenderButton.Size = new Size(55, 22);
+            this.RenderButton.TabIndex = 0;
+            this.RenderButton.Text = "Render";
+            this.RenderButton.UseVisualStyleBackColor = false;
+            this.RenderButton.Click += new System.EventHandler(this.RenderMandelbrot);
             // 
             // mandelbrotPb
             // 
-            this.mandelbrotPb.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mandelbrotPb.Location = new System.Drawing.Point(0, 0);
+            this.mandelbrotPb.Dock = DockStyle.Fill;
+            this.mandelbrotPb.Location = new Point(0, 0);
             this.mandelbrotPb.Name = "mandelbrotPb";
-            this.mandelbrotPb.Size = new System.Drawing.Size(989, 652);
+            this.mandelbrotPb.Size = new Size(989, 652);
             this.mandelbrotPb.TabIndex = 20;
             this.mandelbrotPb.TabStop = false;
             this.mandelbrotPb.MouseClick += this.Mandelbrot_MouseClick;
             // 
-            // label2
+            // iterationsLb
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(10, 16);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(50, 13);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "Iterations";
+            this.iterationsLb.AutoSize = true;
+            this.iterationsLb.Location = new Point(10, 16);
+            this.iterationsLb.Name = "iterationsLb";
+            this.iterationsLb.Size = new Size(50, 13);
+            this.iterationsLb.TabIndex = 4;
+            this.iterationsLb.Text = "Iterations";
             // 
-            // iterationCountTextBox
+            // iterationsTb
             // 
-            this.iterationCountTextBox.Location = new System.Drawing.Point(15, 32);
-            this.iterationCountTextBox.Name = "iterationCountTextBox";
-            this.iterationCountTextBox.Size = new System.Drawing.Size(103, 20);
-            this.iterationCountTextBox.TabIndex = 5;
-            this.iterationCountTextBox.Text = "85";
+            this.iterationsTb.Location = new Point(15, 32);
+            this.iterationsTb.Name = "iterationsTb";
+            this.iterationsTb.Size = new Size(45, 20);
+            this.iterationsTb.TabIndex = 5;
+            this.iterationsTb.Text = "1500";
             // 
-            // groupBox1
+            // argumentsGb
             // 
-            this.groupBox1.BackColor = System.Drawing.SystemColors.Control;
-            this.groupBox1.Controls.Add(this.generatePatternButton);
-            this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.iterationCountTextBox);
-            this.groupBox1.Location = new System.Drawing.Point(12, 12);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(258, 60);
-            this.groupBox1.TabIndex = 19;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Arguments";
-            this.groupBox1.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+            this.argumentsGb.BackColor = SystemColors.Control;
+            this.argumentsGb.Controls.Add(this.parallelismLb);
+            this.argumentsGb.Controls.Add(this.parallelismTb);
+            this.argumentsGb.Controls.Add(this.RenderButton);
+            this.argumentsGb.Controls.Add(this.iterationsLb);
+            this.argumentsGb.Controls.Add(this.iterationsTb);
+            this.argumentsGb.Location = new Point(12, 12);
+            this.argumentsGb.Name = "argumentsGb";
+            this.argumentsGb.Size = new Size(258, 60);
+            this.argumentsGb.TabIndex = 19;
+            this.argumentsGb.TabStop = false;
+            this.argumentsGb.Text = "Arguments";
             // 
-            // groupBox2
+            // timerGb
             // 
-            this.groupBox2.Controls.Add(this.stopwatchLabel);
-            this.groupBox2.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            this.groupBox2.Location = new System.Drawing.Point(828, 596);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(149, 44);
-            this.groupBox2.TabIndex = 20;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Timer";
+            this.timerGb.Anchor = ((AnchorStyles)((AnchorStyles.Bottom | AnchorStyles.Right)));
+            this.timerGb.Controls.Add(this.stopwatchLabel);
+            this.timerGb.Location = new Point(828, 596);
+            this.timerGb.Name = "timerGb";
+            this.timerGb.Size = new Size(149, 44);
+            this.timerGb.TabIndex = 20;
+            this.timerGb.TabStop = false;
+            this.timerGb.Text = "Timer";
             // 
             // stopwatchLabel
             // 
             this.stopwatchLabel.AutoSize = true;
-            this.stopwatchLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.stopwatchLabel.Location = new System.Drawing.Point(9, 16);
+            this.stopwatchLabel.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
+            this.stopwatchLabel.Location = new Point(9, 16);
             this.stopwatchLabel.Name = "stopwatchLabel";
-            this.stopwatchLabel.Size = new System.Drawing.Size(0, 20);
+            this.stopwatchLabel.Size = new Size(0, 20);
             this.stopwatchLabel.TabIndex = 0;
+            // 
+            // parallelismTb
+            // 
+            this.parallelismTb.Location = new Point(69, 32);
+            this.parallelismTb.Name = "parallelismTb";
+            this.parallelismTb.Size = new Size(53, 20);
+            this.parallelismTb.TabIndex = 6;
+            this.parallelismTb.Text = "8";
+            // 
+            // parallelismLb
+            // 
+            this.parallelismLb.AutoSize = true;
+            this.parallelismLb.Location = new Point(66, 16);
+            this.parallelismLb.Name = "parallelismLb";
+            this.parallelismLb.Size = new Size(56, 13);
+            this.parallelismLb.TabIndex = 7;
+            this.parallelismLb.Text = "Parallelism";
             // 
             // Mandelbrot
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(989, 652);
-            this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.groupBox1);
+            this.AutoScaleDimensions = new SizeF(6F, 13F);
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.ClientSize = new Size(989, 652);
+            this.Controls.Add(this.timerGb);
+            this.Controls.Add(this.argumentsGb);
             this.Controls.Add(this.mandelbrotPb);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.Name = "Mandelbrot";
             this.Text = "Mandelbrot";
-            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.WindowState = FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.Form1_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.mandelbrotPb)).EndInit();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
+            ((ISupportInitialize)(this.mandelbrotPb)).EndInit();
+            this.argumentsGb.ResumeLayout(false);
+            this.argumentsGb.PerformLayout();
+            this.timerGb.ResumeLayout(false);
+            this.timerGb.PerformLayout();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Button generatePatternButton;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox iterationCountTextBox;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Label stopwatchLabel;
-        private System.Windows.Forms.PictureBox mandelbrotPb;
+        private Button RenderButton;
+        private Label iterationsLb;
+        private TextBox iterationsTb;
+        private GroupBox argumentsGb;
+        private GroupBox timerGb;
+        private Label stopwatchLabel;
+        private PictureBox mandelbrotPb;
+        private Label parallelismLb;
+        private TextBox parallelismTb;
     }
 }
 
