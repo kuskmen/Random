@@ -7,8 +7,8 @@
     <ProjectGuid>{9AD7E0E7-FFB8-47C3-B4CD-5327D39BDD9C}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Drawing</RootNamespace>
-    <AssemblyName>Drawing</AssemblyName>
+    <RootNamespace>Mandelbrot</RootNamespace>
+    <AssemblyName>Mandelbrot</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

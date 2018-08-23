@@ -1,10 +1,11 @@
-﻿namespace Drawing
+﻿namespace Mandelbrot
 {
-    using System.Windows.Forms;
     using System.ComponentModel;
     using System.Drawing;
-
-    partial class Mandelbrot {
+    using System.Windows.Forms;
+    
+    partial class Mandelbrot
+    {
         /// <summary>
         /// Required designer variable.
         /// </summary>

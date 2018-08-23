@@ -1,11 +1,11 @@
-﻿namespace Drawing
+﻿namespace Mandelbrot
 {
     using System;
     using System.Drawing;
     using System.Drawing.Imaging;
     using System.Numerics;
-    using System.Threading.Tasks;
     using System.Runtime.CompilerServices;
+    using System.Threading.Tasks;
 
     public class MandelbrotRenderer
     {

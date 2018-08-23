@@ -1,13 +1,12 @@
-﻿namespace Drawing
+﻿namespace Mandelbrot
 {
     using System;
-    using System.Drawing;
-    using System.Windows.Forms;
     using System.Diagnostics;
+    using System.Drawing;
     using System.Globalization;
-    using System.Threading;
+    using System.Windows.Forms;
 
-   public partial class Mandelbrot : Form
+    public partial class Mandelbrot : Form
     {
         public Mandelbrot()
         {
