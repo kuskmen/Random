@@ -4,6 +4,9 @@
     using System.Drawing;
     using System.Windows.Forms;
     
+    /// <summary>
+    ///  Type responsible for the front end of the <see cref="Form"/>.
+    /// </summary>
     partial class Mandelbrot
     {
         /// <summary>
@@ -153,7 +156,6 @@
             this.timerGb.ResumeLayout(false);
             this.timerGb.PerformLayout();
             this.ResumeLayout(false);
-
         }
 
         #endregion

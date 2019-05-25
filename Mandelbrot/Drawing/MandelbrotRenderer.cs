@@ -7,6 +7,9 @@
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
 
+    /// <summary>
+    ///  Type that handles the logic of rendering Mandelbrot series into <see cref="Bitmap"/>.
+    /// </summary>
     public class MandelbrotRenderer
     {
         private static readonly Color[] PaletteColors = CreatePaletteColors();
@@ -21,8 +24,8 @@
             return paletteColors;
         }
 
-        /// <summary>Copy our precreated color palette into the target Bitmap.</summary>
-        /// <param name="bmp">The Bitmap to be updated.</param>
+        /// <summary>Copy our precreated color palette into the target <see cref="Bitmap"/>.</summary>
+        /// <param name="bmp">The <see cref="Bitmap"/> to be updated.</param>
         private static void UpdatePalette(Bitmap bmp)
         {
             var p = bmp.Palette;
@@ -30,6 +33,15 @@
             bmp.Palette = p; // The Bitmap will only update when the Palette property's setter is used
         }
 
+        /// <summary>
+        /// Creates <see cref="Bitmap"/> with all the pixels already coloured depending on whether they are
+        /// in or out of the Mandelbrot series.
+        /// </summary>
+        /// <param name="position"> Possition of the fractal at the screen. </param>
+        /// <param name="size"> How big the <see cref="Bitmap"/> should be.</param>
+        /// <param name="iterations"> Number of iterations to iterate before concluding if point is in Mandelbrot series.</param>
+        /// <param name="parallelism"> How much processor cores will the rendering use. </param>
+        /// <returns> <see cref="Bitmap"/> with all the pixels coloured. </returns>
         public static unsafe Bitmap Create(Mandelbrot.MandelbrotCoordinates position, Size size, int iterations, int parallelism)
         {
             var imageWidth = size.Width;
@@ -101,7 +113,11 @@
             }
         }
 
-        // https://en.wikipedia.org/wiki/Mandelbrot_set#Optimizations
+        /// <summary>
+        /// Checks if given complex point is within the big cardioid. 
+        /// </summary>
+        /// <param name="complex"> Complex point to test against. </param>
+        /// <returns> True if <paramref name="complex"/> point is in big cardioid and false otherwise. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool IsInCardioid(Complex complex)
         {

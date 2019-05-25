@@ -6,8 +6,16 @@
     using System.Globalization;
     using System.Windows.Forms;
 
+    /// <inheritdoc />
+    /// <summary>
+    /// Type responsible for the back end of the <see cref="T:System.Windows.Forms.Form" />. 
+    /// </summary>
     public partial class Mandelbrot : Form
     {
+        /// <inheritdoc />
+        /// <summary>
+        /// Initializes new instance of <see cref="T:Mandelbrot.Mandelbrot" /> type.
+        /// </summary>
         public Mandelbrot()
         {
             InitializeComponent();
@@ -29,13 +37,17 @@
         /// On-click handler for generate button. Triggers rendering of the Mandelbrot
         /// set using current configuration settings.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender"> Sender of the event. </param>
+        /// <param name="e"> Event arguments. </param>
         private void RenderMandelbrot(object sender, EventArgs e)
         {
             RenderMandelbrot(int.Parse(iterationsTb.Text));
         }
 
+        /// <summary>
+        ///  Renders mandelbrot into the <see cref="mandelbrotPb"/>
+        /// </summary>
+        /// <param name="iterations"></param>
         private void RenderMandelbrot(int iterations)
         {
             // For diagnostic reasons, time how long the rendering takes
@@ -60,6 +72,12 @@
             stopwatchLabel.Text = stopWatch.Elapsed.TotalSeconds.ToString(CultureInfo.InvariantCulture);
         }
 
+        /// <summary>
+        ///  Event handler for mouse click on the mandelbrot picture.
+        ///  Left mouse click zooms, while right click zooms out.
+        /// </summary>
+        /// <param name="sender"> Sender of the event. </param>
+        /// <param name="args"> Event arguments used to determine which mouse button was clicked. </param>
         private void Mandelbrot_MouseClick(object sender, MouseEventArgs args)
         {
             if((args.Button & MouseButtons.Left) != 0) {
@@ -70,6 +88,11 @@
             Zoom(2d, args);
         }
 
+        /// <summary>
+        ///  Zooms Mandelbrot picture by given factor.
+        /// </summary>
+        /// <param name="factor"> Factor that the mandelbrot will be zoomed with. </param>
+        /// <param name="e"> Event arguments used for determing where the new zoomed mandelbrot will be. </param>
         private void Zoom(double factor, MouseEventArgs e)
         {
             // Center the image on the selected location
@@ -83,8 +106,14 @@
             RenderMandelbrot(int.Parse(iterationsTb.Text));
         }
 
+        /// <summary>
+        ///  Type responsible for mandelbrot coordinates at the screen.
+        /// </summary>
         public struct MandelbrotCoordinates
         {
+            /// <summary>
+            ///  Default positioning of the mandelbrot fractal.
+            /// </summary>
             public static MandelbrotCoordinates Default =>
                 new MandelbrotCoordinates
                 {
@@ -93,11 +122,16 @@
                     CenterX = -.75,
                     CenterY = .006
                 };
-
+            
+#pragma warning disable 1591
             public double Width { get; set; }
+
             public double Height { get; set; }
+
             public double CenterX { get; set; }
+
             public double CenterY { get; set; }
+#pragma warning restore 1591
         }
     }
 }
