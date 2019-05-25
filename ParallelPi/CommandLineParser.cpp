@@ -1,0 +1,93 @@
+#include <iostream>
+
+#include "CommandLineParser.h"
+
+CommandLineParser& CommandLineParser::GetInstance()
+{
+	static CommandLineParser instance;
+
+	return instance;
+}
+
+void CommandLineParser::Parse(int argc, const char* argv[], ProgramOptions& programOptions)
+{
+	boost::program_options::variables_map arguments;
+	LogLevel logLevel;
+
+	try
+	{
+		boost::program_options::options_description options{ "Options" };
+		options.add_options()
+			("help,h", "Prints this page.")
+			
+			("precision,p", 
+				boost::program_options::value<long>()->value_name("(15345, 23442, ...)")->required(),
+				"Use this option todenote how many digits after the floating point you would like to calculate. This option is required.")
+			
+			("iterations,i", 
+				boost::program_options::value<long>()->value_name("(2378542374, 87235487325, ...)")->required(),
+				"Use this option to denote how many terms you want to be calculated from Ramanujan's formula. This option is required.")
+			
+			("threads,t", 
+				boost::program_options::value<short>()->default_value(1)->value_name("(1, 2, 3, ...)"),			
+				"Use this option to denote how many threads do you want to use during computation. Default value is: 1.")
+			
+			("verbosity,v", 
+				boost::program_options::value(&logLevel)->default_value(QUIET)->value_name("(quiet, verbose)"), 
+				"Use this option to configure level of loging during the computation. Possible values are verbose and quiet, default is quiet.");
+
+		boost::program_options::store(boost::program_options::command_line_parser(argc, argv).options(options).allow_unregistered().run(), arguments);
+		boost::program_options::notify(arguments);
+
+		if (arguments.count("help"))
+		{
+			std::cout << options << std::endl;
+
+			// if help is requested failfast
+			exit(0);
+		}
+		if (arguments.count("verbosity"))
+			programOptions.SetLogLevel(arguments["verbosity"].as<LogLevel>());
+		if (arguments.count("threads"))
+			programOptions.SetThreadsCount(arguments["threads"].as<short>());
+		if (arguments.count("precision"))
+			programOptions.SetPrecision(arguments["precision"].as<long>());
+		if (arguments.count("iterations"))
+			programOptions.SetIterations(arguments["iterations"].as<long>());
+	}
+	catch (boost::program_options::error & e)
+	{
+		std::cerr << "ERROR: " << e.what() << std::endl << std::endl;
+		exit(1);
+	}
+}
+
+std::istream& operator>>(std::istream& in, LogLevel& logLevel)
+{
+	std::string token;
+	in >> token;
+	std::transform(token.begin(), token.end(), token.begin(), ::tolower);
+
+	if (token == "verbose")
+		logLevel = VERBOSE;
+	else if (token == "quiet")
+		logLevel = QUIET;
+	else
+		in.setstate(std::ios_base::failbit);
+	return in;
+}
+
+std::ostream & operator<<(std::ostream & out, const LogLevel & logLevel)
+{
+	switch (logLevel)
+	{
+	case VERBOSE:
+		return out << "verbose";
+	case QUIET:
+		return out << "quiet";
+	default:
+		return out;
+	}
+
+	return out;
+}
