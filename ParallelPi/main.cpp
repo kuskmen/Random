@@ -9,11 +9,11 @@
 #include "CommandLineParser.h"
 #include "SeparationStrategy.h"
 
-boost::multiprecision::mpfr_float factorial(int start, int end)
+boost::multiprecision::mpfr_float built_in_factorial(int end)
 {
-	boost::multiprecision::mpfr_float fact = 1;
-	for (; start <= end; ++start)
-		fact *= start;
+	mpfr_t fact;
+	mpfr_init2(fact, boost::multiprecision::mpfr_float::default_precision());
+	mpfr_fac_ui(fact, end, MPFR_RNDN);
 
 	return fact;
 }
@@ -23,11 +23,10 @@ boost::multiprecision::mpfr_float calculatePi(int start, int end)
 	using boost::multiprecision::mpfr_float;
 
 	mpfr_float partition = 0;
-	
 	for (; start < end; ++start)
 	{
-		mpfr_float fac_1_start = factorial(1, start);
-		mpfr_float fac_1_4xStart = fac_1_start * factorial(start + 1, 4 * start);
+		mpfr_float fac_1_start = built_in_factorial(start);
+		mpfr_float fac_1_4xStart = built_in_factorial(4 * start);
 
 		mpfr_float n = fac_1_4xStart * mpfr_float(1103 + 26390 * start);
 		mpfr_float d = boost::multiprecision::pow(fac_1_start, 4) * boost::multiprecision::pow((mpfr_float)396, 4 * start);
@@ -37,6 +36,7 @@ boost::multiprecision::mpfr_float calculatePi(int start, int end)
 	
 	return (2 * boost::multiprecision::sqrt((mpfr_float)2) / 9801) * partition;
 }
+
 
 int main(int argc, const char *argv[])
 {
@@ -51,23 +51,20 @@ int main(int argc, const char *argv[])
 	// Choose thread work sepration strategy
 	EqualSeparationStrategy strategy;
 	auto partitionBounds = strategy.Separate(programOptions.GetIterations(), programOptions.GetThreadsCount());
-
 	
-	
-	std::vector<std::future<boost::multiprecision::mpfr_float>> threads;
+	std::vector<std::future<boost::multiprecision::mpfr_float>> futures;
 
 	boost::timer::cpu_timer timer;
 	auto start = std::chrono::system_clock::now();
 	for (auto partitionBound : partitionBounds)
 	{
-		threads.emplace_back(
+		futures.emplace_back(
 			std::async(calculatePi, partitionBound.first, partitionBound.second));
 	}
 	
 	boost::multiprecision::mpfr_float pi;
-	for (auto threadId = 0; threadId < threads.size(); ++threadId)
-		pi += threads[threadId].get();
-
+	for (auto threadId = 0; threadId < futures.size(); ++threadId)
+		pi += futures[threadId].get();
 	std::chrono::duration<double> elapsed = std::chrono::system_clock::now() - start;
 
 	std::cout << pi << std::endl;
