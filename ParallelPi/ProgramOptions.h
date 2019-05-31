@@ -1,6 +1,6 @@
 #pragma once
 
-enum LogLevel : int8_t { VERBOSE, QUIET };
+enum LogLevel : int8_t { LOG_LEVEL_VERBOSE, LOG_LEVEL_QUIET };
 
 class ProgramOptions
 {
@@ -13,7 +13,7 @@ public:
 	inline void SetPrecision(long const precision) { _precision = precision; }
 	inline void SetIterations(long iterations) { _iterations = iterations; }
 
-	inline LogLevel const GetLogLevel() { return _logLevel; }
+	inline LogLevel GetLogLevel() { return _logLevel; }
 	inline short const GetThreadsCount() { return _threadsCount; }
 	inline long const GetPrecision() { return _precision; }
 	inline long const GetIterations() { return _iterations; }

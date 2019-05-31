@@ -16,10 +16,10 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SeparationStrategy.cpp">
+    <ClCompile Include="EqualSeparationStrategy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EqualSeparationStrategy.cpp">
+    <ClCompile Include="Logger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -27,5 +27,6 @@
     <ClInclude Include="CommandLineParser.h" />
     <ClInclude Include="ProgramOptions.h" />
     <ClInclude Include="SeparationStrategy.h" />
+    <ClInclude Include="Logger.h" />
   </ItemGroup>
 </Project>

@@ -8,6 +8,9 @@
 
 #include "CommandLineParser.h"
 #include "SeparationStrategy.h"
+#include "Logger.h"
+
+std::mutex display_mutex;
 
 boost::multiprecision::mpfr_float built_in_factorial(int end)
 {
@@ -21,8 +24,8 @@ boost::multiprecision::mpfr_float built_in_factorial(int end)
 boost::multiprecision::mpfr_float calculatePi(int start, int end)
 {
 	using boost::multiprecision::mpfr_float;
-
 	mpfr_float partition = 0;
+	LOG_VERBOSE("Thread id: " + std::this_thread::get_id() + " started.\n");
 	for (; start < end; ++start)
 	{
 		mpfr_float fac_1_start = built_in_factorial(start);
@@ -33,7 +36,8 @@ boost::multiprecision::mpfr_float calculatePi(int start, int end)
 		
 		partition += (n / d);
 	}
-	
+	LOG_VERBOSE("Thread id: " + std::this_thread::get_id() + " stopped.\n");
+	display_mutex.unlock();
 	return (2 * boost::multiprecision::sqrt((mpfr_float)2) / 9801) * partition;
 }
 
@@ -52,14 +56,16 @@ int main(int argc, const char *argv[])
 	EqualSeparationStrategy strategy;
 	auto partitionBounds = strategy.Separate(programOptions.GetIterations(), programOptions.GetThreadsCount());
 	
+	// Initialize Logger
+	Logger logger(programOptions);
+
 	std::vector<std::future<boost::multiprecision::mpfr_float>> futures;
 
 	boost::timer::cpu_timer timer;
 	auto start = std::chrono::system_clock::now();
 	for (auto partitionBound : partitionBounds)
 	{
-		futures.emplace_back(
-			std::async(calculatePi, partitionBound.first, partitionBound.second));
+		futures.emplace_back(std::async(calculatePi, partitionBound.first, partitionBound.second));
 	}
 	
 	boost::multiprecision::mpfr_float pi;

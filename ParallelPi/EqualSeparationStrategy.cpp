@@ -1,13 +1,5 @@
 #include "SeparationStrategy.h"
 
-EqualSeparationStrategy::EqualSeparationStrategy() : SeparationStrategy::SeparationStrategy()
-{
-}
-
-EqualSeparationStrategy::~EqualSeparationStrategy()
-{
-}
-
 std::vector<std::pair<long, long>> EqualSeparationStrategy::Separate(long iterations, short threads)
 {
 	std::vector<std::pair<long, long>> ranges;

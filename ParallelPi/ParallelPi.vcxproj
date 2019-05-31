@@ -172,12 +172,13 @@
   <ItemGroup>
     <ClCompile Include="CommandLineParser.cpp" />
     <ClCompile Include="EqualSeparationStrategy.cpp" />
+    <ClCompile Include="Logger.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ProgramOptions.cpp" />
-    <ClCompile Include="SeparationStrategy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommandLineParser.h" />
+    <ClInclude Include="Logger.h" />
     <ClInclude Include="ProgramOptions.h" />
     <ClInclude Include="SeparationStrategy.h" />
   </ItemGroup>
