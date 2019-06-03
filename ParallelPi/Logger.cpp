@@ -1,22 +1,31 @@
 #include <iostream>
+#include <fstream>
 
+#include "Logger.h"
 #include "ProgramOptions.h"
 
 ProgramOptions* Logger::options;
+
+Logger::Logger(std::string fileName)
+{
+	std::ofstream file{ fileName };
+}
 
 void Logger::Log(std::string msg, LogLevel level)
 {
 	if (options->GetLogLevel() <= level)
 	{
-		// TODO different streams
 		display_mutex.lock();
-		std::cout << msg << std::endl;
+		std::ofstream logFile;
+		logFile.open(options->GetFileName(), std::ios::in | std::ios::app);
+		logFile << msg;
+		logFile.close();
 		display_mutex.unlock();
 	}
 }
 
 Logger* Logger::instance()
 {
-	static Logger instance;
+	static Logger instance(options->GetFileName());
 	return &instance;
 }

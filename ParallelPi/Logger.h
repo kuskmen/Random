@@ -1,5 +1,6 @@
 #pragma once
 #include <future>
+#include <string>
 
 class ProgramOptions;
 
@@ -18,8 +19,7 @@ public:
 
 	static Logger* instance();
 private:
-	Logger() { };
-	Logger(LogLevel);
+	Logger(std::string fileName);
 
 	std::mutex display_mutex;
 };

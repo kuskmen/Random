@@ -10,13 +10,15 @@ public:
 	CommandLineParser(CommandLineParser const&) = delete;
 	void operator=(CommandLineParser const&)	= delete;
 	
-	void Parse(int argc, const char* argv[], ProgramOptions&);
+	void Parse(int argc, const char* argv[], std::unique_ptr<ProgramOptions>&);
 
-	static CommandLineParser& GetInstance();
+	static CommandLineParser* instance();
 
 private:
 	CommandLineParser() { }
 };
+
+#define sCommandLineParser CommandLineParser::instance()
 
 
 

@@ -2,14 +2,14 @@
 
 #include "CommandLineParser.h"
 
-CommandLineParser& CommandLineParser::GetInstance()
+CommandLineParser* CommandLineParser::instance()
 {
 	static CommandLineParser instance;
 
-	return instance;
+	return &instance;
 }
 
-void CommandLineParser::Parse(int argc, const char* argv[], ProgramOptions& programOptions)
+void CommandLineParser::Parse(int argc, const char* argv[], std::unique_ptr<ProgramOptions>& programOptions)
 {
 	boost::program_options::variables_map arguments;
 	LogLevel logLevel;
@@ -22,7 +22,7 @@ void CommandLineParser::Parse(int argc, const char* argv[], ProgramOptions& prog
 			
 			("precision,p", 
 				boost::program_options::value<long>()->value_name("(15345, 23442, ...)")->required(),
-				"Use this option todenote how many digits after the floating point you would like to calculate. This option is required.")
+				"Use this option to denote how many digits after the floating point you would like to calculate. This option is required.")
 			
 			("iterations,i", 
 				boost::program_options::value<long>()->value_name("(2378542374, 87235487325, ...)")->required(),
@@ -34,7 +34,11 @@ void CommandLineParser::Parse(int argc, const char* argv[], ProgramOptions& prog
 			
 			("verbosity,v", 
 				boost::program_options::value(&logLevel)->default_value(LOG_LEVEL_QUIET)->value_name("(quiet, verbose)"), 
-				"Use this option to configure level of loging during the computation. Possible values are verbose and quiet, default is quiet.");
+				"Use this option to configure level of loging during the computation. Possible values are verbose and quiet, default is quiet.")
+
+			("output,o",
+				boost::program_options::value<std::string>()->value_name("(name of the output file, can be any valid file name)"),
+				"Use this option to denote the name of the output file.");
 
 		boost::program_options::store(boost::program_options::command_line_parser(argc, argv).options(options).allow_unregistered().run(), arguments);
 		boost::program_options::notify(arguments);
@@ -47,13 +51,17 @@ void CommandLineParser::Parse(int argc, const char* argv[], ProgramOptions& prog
 			exit(0);
 		}
 		if (arguments.count("verbosity"))
-			programOptions.SetLogLevel(arguments["verbosity"].as<LogLevel>());
+			programOptions->SetLogLevel(arguments["verbosity"].as<LogLevel>());
 		if (arguments.count("threads"))
-			programOptions.SetThreadsCount(arguments["threads"].as<short>());
+			programOptions->SetThreadsCount(arguments["threads"].as<short>());
 		if (arguments.count("precision"))
-			programOptions.SetPrecision(arguments["precision"].as<long>());
+			programOptions->SetPrecision(arguments["precision"].as<long>());
 		if (arguments.count("iterations"))
-			programOptions.SetIterations(arguments["iterations"].as<long>());
+			programOptions->SetIterations(arguments["iterations"].as<long>());
+		if (arguments.count("output"))
+			programOptions->SetOutputFileName(arguments["output"].as<std::string>());
+		else
+			programOptions->SetOutputFileName("output.txt");
 	}
 	catch (boost::program_options::error & e)
 	{
