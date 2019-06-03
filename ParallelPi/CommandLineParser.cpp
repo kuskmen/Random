@@ -33,7 +33,7 @@ void CommandLineParser::Parse(int argc, const char* argv[], ProgramOptions& prog
 				"Use this option to denote how many threads do you want to use during computation. Default value is: 1.")
 			
 			("verbosity,v", 
-				boost::program_options::value(&logLevel)->default_value(QUIET)->value_name("(quiet, verbose)"), 
+				boost::program_options::value(&logLevel)->default_value(LOG_LEVEL_QUIET)->value_name("(quiet, verbose)"), 
 				"Use this option to configure level of loging during the computation. Possible values are verbose and quiet, default is quiet.");
 
 		boost::program_options::store(boost::program_options::command_line_parser(argc, argv).options(options).allow_unregistered().run(), arguments);
@@ -69,9 +69,9 @@ std::istream& operator>>(std::istream& in, LogLevel& logLevel)
 	std::transform(token.begin(), token.end(), token.begin(), ::tolower);
 
 	if (token == "verbose")
-		logLevel = VERBOSE;
+		logLevel = LOG_LEVEL_VERBOSE;
 	else if (token == "quiet")
-		logLevel = QUIET;
+		logLevel = LOG_LEVEL_QUIET;
 	else
 		in.setstate(std::ios_base::failbit);
 	return in;
@@ -81,9 +81,9 @@ std::ostream & operator<<(std::ostream & out, const LogLevel & logLevel)
 {
 	switch (logLevel)
 	{
-	case VERBOSE:
+	case LOG_LEVEL_VERBOSE:
 		return out << "verbose";
-	case QUIET:
+	case LOG_LEVEL_QUIET:
 		return out << "quiet";
 	default:
 		return out;

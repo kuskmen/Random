@@ -1,6 +1,6 @@
 #pragma once
 
-enum LogLevel : int8_t { LOG_LEVEL_VERBOSE, LOG_LEVEL_QUIET };
+#include "Logger.h"
 
 class ProgramOptions
 {

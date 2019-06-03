@@ -1,25 +1,33 @@
 #pragma once
 #include <future>
 
-#include "ProgramOptions.h"
+class ProgramOptions;
+
+enum LogLevel : int8_t { LOG_LEVEL_VERBOSE, LOG_LEVEL_QUIET };
 
 class Logger
 {
 public:
-	Logger(ProgramOptions&);
+	static ProgramOptions* options;
+	
 	Logger(Logger const&) = delete;
 	void operator=(Logger const&) = delete;
 
 	void Log(std::string, LogLevel);
 	//bool ShouldLog(LogLevel) const;
 
+	static Logger* instance();
 private:
-	ProgramOptions _options;
+	Logger() { };
+	Logger(LogLevel);
+
 	std::mutex display_mutex;
 };
 
-#define LOG_VERBOSE(msg) \
-	Logger::Log(msg, LOG_LEVEL_VERBOSE)
+#define sLogger Logger::instance()
 
-#define LOG_QUIET(msg) \
-	Logger::Log(msg, LOG_LEVEL_QUIET)
+#define LOG_VERBOSE(msg) \
+	sLogger->Log(msg, LOG_LEVEL_VERBOSE)
+
+#define LOG_QUIET(msg__) \
+	sLogger->Log(msg__, LOG_LEVEL_QUIET)

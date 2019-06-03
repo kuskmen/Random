@@ -9,6 +9,7 @@
 #include "CommandLineParser.h"
 #include "SeparationStrategy.h"
 #include "Logger.h"
+#include "ProgramOptions.h"
 
 std::mutex display_mutex;
 
@@ -25,7 +26,12 @@ boost::multiprecision::mpfr_float calculatePi(int start, int end)
 {
 	using boost::multiprecision::mpfr_float;
 	mpfr_float partition = 0;
-	LOG_VERBOSE("Thread id: " + std::this_thread::get_id() + " started.\n");
+	
+	std::stringstream ss;
+	ss << std::this_thread::get_id();
+	std::string thread_id = ss.str();
+
+	LOG_VERBOSE("Thread id: " + thread_id + " started.\n");
 	for (; start < end; ++start)
 	{
 		mpfr_float fac_1_start = built_in_factorial(start);
@@ -36,11 +42,10 @@ boost::multiprecision::mpfr_float calculatePi(int start, int end)
 		
 		partition += (n / d);
 	}
-	LOG_VERBOSE("Thread id: " + std::this_thread::get_id() + " stopped.\n");
-	display_mutex.unlock();
+	LOG_VERBOSE("Thread id: " + thread_id + " stopped.\n");
+	
 	return (2 * boost::multiprecision::sqrt((mpfr_float)2) / 9801) * partition;
 }
-
 
 int main(int argc, const char *argv[])
 {
@@ -57,7 +62,7 @@ int main(int argc, const char *argv[])
 	auto partitionBounds = strategy.Separate(programOptions.GetIterations(), programOptions.GetThreadsCount());
 	
 	// Initialize Logger
-	Logger logger(programOptions);
+	Logger::options = &programOptions;
 
 	std::vector<std::future<boost::multiprecision::mpfr_float>> futures;
 
