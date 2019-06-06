@@ -13,7 +13,7 @@ public:
 	virtual T Separate(long, short) = 0;
 };
 
-class EqualSeparationStrategy : public SeparationStrategy<simple_ranges>
+class NaiveSeparationStrategy : public SeparationStrategy<simple_ranges>
 {
 public:
 	simple_ranges Separate(long, short);

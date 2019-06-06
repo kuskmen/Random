@@ -1,6 +1,6 @@
 #include "SeparationStrategy.h"
 
-simple_ranges EqualSeparationStrategy::Separate(long iterations, short threads)
+simple_ranges NaiveSeparationStrategy::Separate(long iterations, short threads)
 {
 	simple_ranges ranges;
 	if (threads == 0)

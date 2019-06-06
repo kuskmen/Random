@@ -83,7 +83,7 @@ boost::multiprecision::mpfr_float calculate(ProgramOptions* options)
 	}
 	else
 	{
-		auto strategy = new EqualSeparationStrategy();
+		auto strategy = new NaiveSeparationStrategy();
 		auto partitions = strategy->Separate(options->GetIterations(), options->GetThreadsCount());
 
 		for (auto partition : partitions)
