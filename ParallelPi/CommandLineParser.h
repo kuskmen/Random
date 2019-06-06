@@ -6,7 +6,6 @@
 class CommandLineParser
 {
 public:
-
 	CommandLineParser(CommandLineParser const&) = delete;
 	void operator=(CommandLineParser const&)	= delete;
 	

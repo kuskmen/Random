@@ -20,10 +20,6 @@ void CommandLineParser::Parse(int argc, const char* argv[], std::unique_ptr<Prog
 		options.add_options()
 			("help,h", "Prints this page.")
 			
-			("precision,p", 
-				boost::program_options::value<long>()->value_name("(15345, 23442, ...)")->required(),
-				"Use this option to denote how many digits after the floating point you would like to calculate. This option is required.")
-			
 			("iterations,i", 
 				boost::program_options::value<long>()->value_name("(2378542374, 87235487325, ...)")->required(),
 				"Use this option to denote how many terms you want to be calculated from Ramanujan's formula. This option is required.")
@@ -38,7 +34,10 @@ void CommandLineParser::Parse(int argc, const char* argv[], std::unique_ptr<Prog
 
 			("output,o",
 				boost::program_options::value<std::string>()->value_name("(name of the output file, can be any valid file name)"),
-				"Use this option to denote the name of the output file.");
+				"Use this option to denote the name of the output file.")
+		    ("optimized",
+				boost::program_options::bool_switch()->default_value(false),
+				"Use this option to configure optimized strategy for work separation.");
 
 		boost::program_options::store(boost::program_options::command_line_parser(argc, argv).options(options).allow_unregistered().run(), arguments);
 		boost::program_options::notify(arguments);
@@ -54,14 +53,14 @@ void CommandLineParser::Parse(int argc, const char* argv[], std::unique_ptr<Prog
 			programOptions->SetLogLevel(arguments["verbosity"].as<LogLevel>());
 		if (arguments.count("threads"))
 			programOptions->SetThreadsCount(arguments["threads"].as<short>());
-		if (arguments.count("precision"))
-			programOptions->SetPrecision(arguments["precision"].as<long>());
 		if (arguments.count("iterations"))
 			programOptions->SetIterations(arguments["iterations"].as<long>());
 		if (arguments.count("output"))
 			programOptions->SetOutputFileName(arguments["output"].as<std::string>());
 		else
 			programOptions->SetOutputFileName("output.txt");
+		if (arguments.count("optimized"))
+			programOptions->SetOptimized(arguments["optimized"].as<bool>());
 	}
 	catch (boost::program_options::error & e)
 	{
@@ -89,12 +88,12 @@ std::ostream & operator<<(std::ostream & out, const LogLevel & logLevel)
 {
 	switch (logLevel)
 	{
-	case LOG_LEVEL_VERBOSE:
-		return out << "verbose";
-	case LOG_LEVEL_QUIET:
-		return out << "quiet";
-	default:
-		return out;
+		case LOG_LEVEL_VERBOSE:
+			return out << "verbose";
+		case LOG_LEVEL_QUIET:
+			return out << "quiet";
+		default:
+			return out;
 	}
 
 	return out;

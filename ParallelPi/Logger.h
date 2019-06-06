@@ -31,3 +31,8 @@ private:
 
 #define LOG_QUIET(msg__) \
 	sLogger->Log(msg__, LOG_LEVEL_QUIET)
+
+namespace pp
+{
+	std::string to_string(LogLevel);
+}

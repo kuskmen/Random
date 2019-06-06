@@ -29,3 +29,16 @@ Logger* Logger::instance()
 	static Logger instance(options->GetFileName());
 	return &instance;
 }
+
+std::string pp::to_string(LogLevel level)
+{
+	switch (level)
+	{
+		case LOG_LEVEL_VERBOSE:
+			return "Verbose";
+		case LOG_LEVEL_QUIET:
+			return "Quiet";
+		default:
+			return "Unspecified";
+	}
+}
