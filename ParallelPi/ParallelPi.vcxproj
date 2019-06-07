@@ -171,6 +171,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CommandLineParser.cpp" />
+    <ClCompile Include="cpu_x86.cpp" />
     <ClCompile Include="SeparationStrategy.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="main.cpp" />
@@ -178,6 +179,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommandLineParser.h" />
+    <ClInclude Include="cpu_x86.h" />
+    <ClInclude Include="cpu_x86_Windows.ipp" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="ProgramOptions.h" />
     <ClInclude Include="SeparationStrategy.h" />

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <ctime>
 
 #include "CommandLineParser.h"
 
@@ -42,6 +43,12 @@ void CommandLineParser::Parse(int argc, const char* argv[], std::unique_ptr<Prog
 		boost::program_options::store(boost::program_options::command_line_parser(argc, argv).options(options).allow_unregistered().run(), arguments);
 		boost::program_options::notify(arguments);
 
+		time_t rawtime;
+		struct tm timeinfo;
+
+		time(&rawtime);
+		localtime_s(&timeinfo, &rawtime);
+
 		if (arguments.count("help"))
 		{
 			std::cout << options << std::endl;
@@ -58,7 +65,14 @@ void CommandLineParser::Parse(int argc, const char* argv[], std::unique_ptr<Prog
 		if (arguments.count("output"))
 			programOptions->SetOutputFileName(arguments["output"].as<std::string>());
 		else
-			programOptions->SetOutputFileName("output.txt");
+			programOptions->SetOutputFileName("output-" 
+				+ std::to_string(timeinfo.tm_year + 1900)
+				+ std::to_string(timeinfo.tm_mday)
+				+ std::to_string(timeinfo.tm_mon + 1)
+				+ std::to_string(timeinfo.tm_hour)
+				+ std::to_string(timeinfo.tm_min)
+				+ std::to_string(timeinfo.tm_sec)
+				+ ".txt");
 		if (arguments.count("optimized"))
 			programOptions->SetOptimized(arguments["optimized"].as<bool>());
 	}

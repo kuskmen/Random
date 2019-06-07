@@ -5,6 +5,10 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="deps">
+      <UniqueIdentifier>{c9271e9b-49c1-4e2a-99f7-c3d07bb3a930}</UniqueIdentifier>
+      <Extensions>cpu_x86.cpp</Extensions>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommandLineParser.cpp">
@@ -22,11 +26,20 @@
     <ClCompile Include="SeparationStrategy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="cpu_x86.cpp">
+      <Filter>deps</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommandLineParser.h" />
     <ClInclude Include="ProgramOptions.h" />
     <ClInclude Include="SeparationStrategy.h" />
     <ClInclude Include="Logger.h" />
+    <ClInclude Include="cpu_x86.h">
+      <Filter>deps</Filter>
+    </ClInclude>
+    <ClInclude Include="cpu_x86_Windows.ipp">
+      <Filter>deps</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

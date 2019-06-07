@@ -11,6 +11,7 @@
 #include "SeparationStrategy.h"
 #include "ProgramOptions.h"
 #include "Logger.h"
+#include "cpu_x86.h"
 
 std::mutex display_mutex;
 
@@ -114,7 +115,10 @@ int main(int argc, const char *argv[])
 			+ "\toptimized: " + std::string(programOptions->IsOptimized() ? "Yes" : "No")
 			+ "\n\n"
 		);
-	
+
+	// Print CPU features
+	FeatureDetector::cpu_x86::print_host();
+
 	// Set precision for the output and data type
 	// Ramanujan formula calculates 8 digits each iteration
 	boost::multiprecision::mpfr_float::default_precision(programOptions->GetIterations() * 8);
@@ -125,7 +129,7 @@ int main(int argc, const char *argv[])
 	std::chrono::duration<double> elapsed = std::chrono::system_clock::now() - start;
 
 	LOG_QUIET("1/pi: " + pi.str() + "\n");
-	LOG_VERBOSE("Threads used in current run: " + std::to_string(programOptions->GetThreadsCount()) + "\n.");
+	LOG_VERBOSE("Threads used in current run: " + std::to_string(programOptions->GetThreadsCount()) + ".\n");
 	LOG_QUIET("Total CPU execution time: " + timer.format());
 	LOG_QUIET("Total execution time in miliseconds: " + std::to_string(elapsed.count()) + "ms.");
 
