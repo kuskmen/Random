@@ -5,14 +5,14 @@ date: Юни 2019
 title: 'Пресмятане на Pi -- Ramanujan'
 ---
 
-<div style="text-align:center"><img src="../assets/su.jpg" /></div>
+<div style="text-align:center"><img src="assets/su.jpg" /></div>
 
 Увод в проекта
 ==============
 
-Проектът реализира паралелен алгоритъм за намирането на <img src="../assets/1overPi.jpg" align="center" border="0" alt=" \frac{1}{\pi} " width="15" height="43" />
+Проектът реализира паралелен алгоритъм за намирането на <img src="/assets/1overPi.jpg" align="center" border="0" alt=" \frac{1}{\pi} " width="15" height="43" />
 по формулата на Ramanujan:
-<img src="../assets/ramanujanFormula.png" align="center" border="0" width="222" height="33" />
+<img src="/assets/ramanujanFormula.png" align="center" border="0" width="222" height="33" />
 
 Ако разгледаме формулата внимателно забялзваме, че всеки един наш член
 на редицата, се нуждае от пресмятането на k! и 4k!, това означава,
@@ -29,10 +29,10 @@ title: 'Пресмятане на Pi -- Ramanujan'
     това, ще зададе на програмата да пресметне 23572 члена от сумата на
     Ramanujan, също така прецизността на решението автоматично ще бъде
     настроена на 23572 * 8 тъй, като всеки един член на сумата добавя
-    8 нови знака към <img src="../assets/1overPi.jpg" align="center" border="0" alt=" \frac{1}{\pi} " width="15" height="43" />. Този параметър е задължителен.
+    8 нови знака към <img src="/assets/1overPi.jpg" align="center" border="0" alt=" \frac{1}{\pi} " width="15" height="43" />. Този параметър е задължителен.
 
 -   Команден параметър, който задава максималния брой нишки (задачи) на
-    които разделяме работата по пресмятането на <img src="../assets/1overPi.jpg" align="center" border="0" alt=" \frac{1}{\pi} " width="15" height="43" />
+    които разделяме работата по пресмятането на <img src="/assets/1overPi.jpg" align="center" border="0" alt=" \frac{1}{\pi} " width="15" height="43" />
 
     *--t=1 или –-threads=1*
 
@@ -98,7 +98,7 @@ Visual C++ компилатор, като е изпозван модела за 
 формулата. Още при пускането на програмата всички командни параметри се
 запазват в обект от тип `ProgramOptions`, който след това се ползва да
 настройването на `Logger::options`, прецизността на типа, който ползва
-програмата за пресмятане на <img src="../assets/1overPi.jpg" align="center" border="0" alt=" \frac{1}{\pi} " width="15" height="43" />
+програмата за пресмятане на <img src="/assets/1overPi.jpg" align="center" border="0" alt=" \frac{1}{\pi} " width="15" height="43" />
 (`boost::multiprecision::mpfr_float`) и за разпределянето на работата по
 нишките, чийто задача има `SeparationStrategy` обектът. Програмата има
 два вида стратегии на разпределяне на работа.
@@ -159,7 +159,7 @@ Visual C++ компилатор, като е изпозван модела за 
     нишки трябва да пресметнем хиляда члена от сумата, този път нашето
     разпределени ще изглежда по този начин
 
-    <img src="../assets/optimized-intervals.png" align="center" border="0" alt="1:[0,100]$\cup$[900,1000], 2:[101,200]$\cup$[800,899], 3:[201,300]$\cup$[700,799], 4:[301,400]$\cup$[600,699], 5:[401,500]$\cup$[500,599]" width="1006" height="18" />
+    <img src="/assets/optimized-intervals.png" align="center" border="0" alt="1:[0,100]$\cup$[900,1000], 2:[101,200]$\cup$[800,899], 3:[201,300]$\cup$[700,799], 4:[301,400]$\cup$[600,699], 5:[401,500]$\cup$[500,599]" width="1006" height="18" />
 
     Вижда се, че сега работата наистина е не само по разпределена по
     равно, но и по сложност.
@@ -235,11 +235,11 @@ slaves) и след това да запише резултата.
 
 Ускорението, което се получава от предишната таблица.
 
-![image](../assets/Sp.JPG)
+![image](/assets/Sp.JPG)
 
 Ефикасността, която се получава.
 
-![image](../assets/Ep.JPG)
+![image](/assets/Ep.JPG)
 
 **T1** -- времето за изпълнение на серийната програма (използваща една
 нишка). 
