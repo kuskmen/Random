@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.ComponentModel.DataAnnotations;
 
 namespace Shameful_MVC.Models
 {
-    public class StudentViewModel
+    public partial class Student : PageModel
     {
         [Required(ErrorMessage = "Please enter name e.g. John")]
         [StringLength(maximumLength: 20, MinimumLength = 5)]
@@ -19,10 +20,12 @@ namespace Shameful_MVC.Models
         public string FacultyNumber { get; set; }
 
         [Required(ErrorMessage = "Please enter password e.g. mySecr3tPass!")]
+        [DataType(DataType.Password)]
         [StringLength(maximumLength: 30, MinimumLength = 6)]
         public string Password { get; set; }
 
         [Required(ErrorMessage = "Please make sure passwords match.")]
+        [DataType(DataType.Password)]
         [StringLength(maximumLength: 30, MinimumLength = 6)]
         public string ConfirmPassword { get; set; }
 
