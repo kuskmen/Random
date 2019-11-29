@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Shameful_MVC.Models;
+using Shameful_MVC.Data;
 using System;
 
 namespace Shameful_MVC
@@ -20,7 +20,10 @@ namespace Shameful_MVC
                 try
                 {
                     var context = services.GetRequiredService<shameful_mvcContext>();
+                    //var identityContext = services.GetRequiredService<IdentityDbContext>();
+
                     context.Database.EnsureCreated();
+                    //identityContext.Database.EnsureCreated();
                 }
                 catch (Exception ex)
                 {

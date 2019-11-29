@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Shameful_MVC.Data;
 using Shameful_MVC.Models;
+using Shameful_MVC.Views.Registration;
 using System.Threading.Tasks;
 
 namespace Shameful_MVC.Controllers
@@ -15,12 +17,8 @@ namespace Shameful_MVC.Controllers
 
         public IActionResult Index()
         {
-            return View();
-        }
-
-        public IActionResult Register()
-        {
-            return View();
+            var registrationModel = new RegistrationViewModel();
+            return View(registrationModel);
         }
 
         [HttpPost]
@@ -31,7 +29,7 @@ namespace Shameful_MVC.Controllers
             {
                 _context.Add(student);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Home");
             }
 
             return View(student);

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Shameful_MVC.Models;
 
-namespace Shameful_MVC.Models
+namespace Shameful_MVC.Data
 {
     public partial class shameful_mvcContext : DbContext
     {
@@ -36,7 +37,7 @@ namespace Shameful_MVC.Models
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasColumnName("name")
-                    .HasMaxLength(1)
+                    .HasMaxLength(100)
                     .IsUnicode(false);
             });
 
@@ -55,7 +56,7 @@ namespace Shameful_MVC.Models
                 entity.Property(e => e.FormOfEducation)
                     .IsRequired()
                     .HasColumnName("formOfEducation")
-                    .HasMaxLength(1)
+                    .HasMaxLength(10)
                     .IsUnicode(false);
 
                 entity.Property(e => e.LastName)
@@ -66,7 +67,7 @@ namespace Shameful_MVC.Models
 
                 entity.Property(e => e.MiddleName)
                     .HasColumnName("middleName")
-                    .HasMaxLength(1)
+                    .HasMaxLength(100)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Name)

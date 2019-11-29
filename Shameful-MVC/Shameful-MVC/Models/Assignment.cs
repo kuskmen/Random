@@ -2,10 +2,13 @@
 
 namespace Shameful_MVC.Models
 {
-    public partial class Assignment
+
+    public class Assignment
     {
-        public DateTime Date { get; set; }
         public string Name { get; set; }
+
+        public DateTime Date { get; set; } = DateTime.UtcNow;
+
         public byte[] File { get; set; }
     }
 }

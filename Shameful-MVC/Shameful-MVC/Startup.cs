@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Shameful_MVC.Models;
+using Shameful_MVC.Data;
 
 namespace Shameful_MVC
 {
@@ -22,8 +22,12 @@ namespace Shameful_MVC
         {
             var connection = Configuration.GetConnectionString("shameful_mvcDatabase");
             services.AddDbContext<shameful_mvcContext>(options => options.UseSqlServer(connection));
+            services.AddSession();
 
             services.AddRazorPages();
+
+            //services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+            //    .AddEntityFrameworkStores<IdentityDbContext>();
             services.AddControllersWithViews();
         }
 
@@ -43,18 +47,23 @@ namespace Shameful_MVC
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+            app.UseSession();
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Login}/{action=Index}/{id?}");
                 endpoints.MapControllerRoute(
                     name: "Registration Form",
                     pattern: "{controller=Registration}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute(
+                    name: "Assignments Form",
+                    pattern: "{controller=Assignments}/{action=Add}");
 
                 endpoints.MapRazorPages();
             });

@@ -1,0 +1,27 @@
+﻿@model  Shameful_MVC.Views.Assignments.AssignmentViewModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewBag.Title = "Assignment Form";
+}
+
+<form enctype="multipart/form-data" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="@Model.Name"></label>
+        <input asp-for="@Model.Name" type="text" />
+        <span asp-validation-for="@Model.Name"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="@Model.FormFile"></label>
+        <input asp-for="@Model.FormFile" type="file" />
+        <span asp-validation-for="@Model.FormFile"></span>
+    </div>
+    <div class="form-group">
+        <input asp-action="Add" class="btn btn-primary" type="submit" value="Upload" />
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
