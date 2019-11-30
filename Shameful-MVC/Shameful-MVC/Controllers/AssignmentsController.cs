@@ -41,7 +41,7 @@ namespace Shameful_MVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Add(AssignmentViewModel assignmentViewModel)
+        public async Task<IActionResult> Add(AssignmentFormViewModel assignmentViewModel)
         {
             if (ModelState.IsValid)
             {
@@ -57,7 +57,7 @@ namespace Shameful_MVC.Controllers
 
                 _context.Add(assignment);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Index", "Assignments");
+                return RedirectToAction(nameof(Index), "Assignments");
             }
 
             return View(nameof(AssignmentsAddForm));

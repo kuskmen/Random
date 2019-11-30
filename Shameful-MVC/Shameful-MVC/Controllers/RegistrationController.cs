@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shameful_MVC.Data;
 using Shameful_MVC.Models;
@@ -19,6 +21,11 @@ namespace Shameful_MVC.Controllers
 
         public IActionResult Index(RegistrationViewModel model)
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction(nameof(AssignmentsController.Index), "Assignments");
+            }
+
             if (model != null)
             {
                 return View("Index", model);
@@ -36,10 +43,13 @@ namespace Shameful_MVC.Controllers
             {
                 _context.Add(student);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Index", "Home");
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                    LoginController.AuthenticateUser(student.FacultyNumber));
+
+                return RedirectToAction(nameof(AssignmentsController.Index), "Assignments");
             }
 
-            return View("Index", new RegistrationViewModel
+            return View(nameof(RegistrationController.Index), new RegistrationViewModel
             {
                 Student = student,
             });

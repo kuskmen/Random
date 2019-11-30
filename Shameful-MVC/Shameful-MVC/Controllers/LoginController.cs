@@ -22,6 +22,11 @@ namespace Shameful_MVC.Controllers
 
         public IActionResult Index(LoginViewModel model)
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction(nameof(AssignmentsController.Index), "Assignments");
+            }
+
             if (model == null)
             {
                 model = new LoginViewModel();
@@ -38,18 +43,22 @@ namespace Shameful_MVC.Controllers
                 var student = _context.Students.Find(model.FacultyNumber);
                 if (student != null && student.Password.Equals(model.Password))
                 {
-                    var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
-                    identity.AddClaim(new Claim(PolicyConstants.FacultyNumberPolicyClaim, model.FacultyNumber));
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, AuthenticateUser(model.FacultyNumber));
 
-                    var principal = new ClaimsPrincipal(identity);
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-
-                    return RedirectToAction("Index", "Assignments");
+                    return RedirectToAction(nameof(AssignmentsController.Index), "Assignments");
                 }
             }
 
             model.SuccessfulLogin = false;
-            return View("Index", model);
+            return View(nameof(LoginController.Index), model);
+        }
+
+        public static ClaimsPrincipal AuthenticateUser(string facultyNumber)
+        {
+            var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
+            identity.AddClaim(new Claim(PolicyConstants.FacultyNumberPolicyClaim, facultyNumber));
+
+            return new ClaimsPrincipal(identity);
         }
     }
 }
