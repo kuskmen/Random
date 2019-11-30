@@ -17,7 +17,9 @@ create table students (
 
 drop table if exists assignments
 create table assignments(
+    id int identity primary key not null,
     date datetime not null,
     name varchar(100) not null,
-    assignment varbinary not null,
+    /* mm lets flood the server with tons of data */
+    assignment varbinary(max) not null,
 );

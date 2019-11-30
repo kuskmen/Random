@@ -21,14 +21,13 @@ namespace Shameful_MVC.Data
         {
             modelBuilder.Entity<Assignment>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.ToTable("assignments");
+
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.File)
                     .IsRequired()
-                    .HasColumnName("assignment")
-                    .HasMaxLength(1);
+                    .HasColumnName("assignment");
 
                 entity.Property(e => e.Date)
                     .HasColumnName("date")

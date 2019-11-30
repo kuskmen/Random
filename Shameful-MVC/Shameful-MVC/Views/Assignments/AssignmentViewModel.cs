@@ -9,7 +9,7 @@ namespace Shameful_MVC.Views.Assignments
         [StringLength(maximumLength: 100, MinimumLength = 5)]
         public string Name { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "File field is required.")]
         [DataType(DataType.Upload)]
         [Utilities.FileExtensions(errorMessage: "This filed is required and only .zip files can be uploaded.", fileExtensions: "zip")]
         public IFormFile FormFile { get; set; }

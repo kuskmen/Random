@@ -8,13 +8,13 @@ namespace Shameful_MVC.Views.Registration
     {
         public Student Student { get; set; }
 
-        public IList<SelectListItem> FormOfEducations { get; } = new List<SelectListItem>
+        public IList<SelectListItem> FormOfEducations { get; set; } = new List<SelectListItem>
         {
             new SelectListItem { Text = "full-time", Value = "1" },
             new SelectListItem { Text = "part-time", Value = "2" },
         };
 
-        public IList<SelectListItem> Years { get; } = new List<SelectListItem>
+        public IList<SelectListItem> Years { get; set; } = new List<SelectListItem>
         {
             new SelectListItem { Text = "1 year", Value = "1" },
             new SelectListItem { Text = "2 year", Value = "2" },

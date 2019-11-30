@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Shameful_MVC.Data;
 using Shameful_MVC.Models;
 using Shameful_MVC.Views.Registration;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Shameful_MVC.Controllers
 {
+    [AllowAnonymous]
     public class RegistrationController : Controller
     {
         private readonly shameful_mvcContext _context;
@@ -15,8 +17,13 @@ namespace Shameful_MVC.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(RegistrationViewModel model)
         {
+            if (model != null)
+            {
+                return View("Index", model);
+            }
+
             var registrationModel = new RegistrationViewModel();
             return View(registrationModel);
         }
@@ -32,7 +39,10 @@ namespace Shameful_MVC.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            return View(student);
+            return View("Index", new RegistrationViewModel
+            {
+                Student = student,
+            });
         }
     }
 }

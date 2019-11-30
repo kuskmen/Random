@@ -20,10 +20,7 @@ namespace Shameful_MVC
                 try
                 {
                     var context = services.GetRequiredService<shameful_mvcContext>();
-                    //var identityContext = services.GetRequiredService<IdentityDbContext>();
-
                     context.Database.EnsureCreated();
-                    //identityContext.Database.EnsureCreated();
                 }
                 catch (Exception ex)
                 {

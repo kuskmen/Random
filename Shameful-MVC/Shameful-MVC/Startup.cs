@@ -1,10 +1,13 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Shameful_MVC.Data;
+using Shameful_MVC.Utilities;
 
 namespace Shameful_MVC
 {
@@ -25,9 +28,20 @@ namespace Shameful_MVC
             services.AddSession();
 
             services.AddRazorPages();
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Login";
+                    options.AccessDeniedPath = "/Login";
+                });
 
-            //services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
-            //    .AddEntityFrameworkStores<IdentityDbContext>();
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(PolicyConstants.LoggedInPolicy,
+                    policy => policy.RequireClaim(PolicyConstants.FacultyNumberPolicyClaim));
+            });
+
             services.AddControllersWithViews();
         }
 
@@ -52,6 +66,10 @@ namespace Shameful_MVC
 
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseCookiePolicy(new CookiePolicyOptions
+            {
+                MinimumSameSitePolicy = SameSiteMode.Strict,
+            });
 
             app.UseEndpoints(endpoints =>
             {
@@ -62,8 +80,8 @@ namespace Shameful_MVC
                     name: "Registration Form",
                     pattern: "{controller=Registration}/{action=Index}/{id?}");
                 endpoints.MapControllerRoute(
-                    name: "Assignments Form",
-                    pattern: "{controller=Assignments}/{action=Add}");
+                    name: "Assignments Panel",
+                    pattern: "{controller=Assignments}/{action=Index}/{id?}");
 
                 endpoints.MapRazorPages();
             });

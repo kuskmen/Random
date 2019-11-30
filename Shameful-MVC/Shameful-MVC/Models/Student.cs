@@ -27,7 +27,10 @@ namespace Shameful_MVC.Models
         [Required(ErrorMessage = "Please enter password e.g. mySecr3tPass!")]
         [DataType(DataType.Password)]
         [StringLength(maximumLength: 30, MinimumLength = 6)]
-        [RegularExpression("")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{6,30}$",
+            ErrorMessage = "Password must have at least one lower-case, " +
+            "one upper-case latin letter(a-z)(A-Z), one digit (0-9), " +
+            "one special symbol (ex. '-', '_', '@', '*'")]
         public string Password { get; set; }
 
         [BindProperty]
