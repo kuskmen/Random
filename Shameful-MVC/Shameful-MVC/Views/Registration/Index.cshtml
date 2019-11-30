@@ -65,7 +65,7 @@
                     <div class="form-group">
                         <label asp-for="Student.FormOfEducation" class="control-label"></label>
                         <select asp-for="Student.FormOfEducation" asp-items="Model.FormOfEducations" class="form-control">
-                            <option>Please select one</option>
+                            <option value="" hidden disabled selected>Please select one</option>
                         </select>
                         <span asp-validation-for="Student.FormOfEducation" class="text-danger"></span>
                     </div>

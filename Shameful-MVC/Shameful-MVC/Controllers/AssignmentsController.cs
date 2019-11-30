@@ -41,7 +41,7 @@ namespace Shameful_MVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Add(AssignmentFormViewModel assignmentViewModel)
+        public async Task<IActionResult> Add(AssignmentViewModel assignmentViewModel)
         {
             if (ModelState.IsValid)
             {
