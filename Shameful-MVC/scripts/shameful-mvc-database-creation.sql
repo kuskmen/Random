@@ -1,5 +1,6 @@
 ﻿drop database if exists shameful_mvc
 create database shameful_mvc
+go
 
 use shameful_mvc
 
